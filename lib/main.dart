@@ -2,6 +2,7 @@ import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:icg_navy/controller/bottomnavigation/bottom_navigation_controller.dart';
 import 'package:icg_navy/utility/app_colors.dart';
 import 'package:icg_navy/utility/customdesign/connctivityservice.dart';
 
@@ -20,6 +21,10 @@ void main() {
   //   fenix: true,
   // );
   // Get.lazyPut<StatusController>(() => StatusController(), fenix: true);
+  Get.lazyPut<BottomNavigationController>(
+    () => BottomNavigationController(),
+    fenix: true,
+  );
   runApp(const MyApp());
 }
 
@@ -147,7 +152,7 @@ class MyApp extends StatelessWidget {
           color: AppColors.primary,
         ),
       ),
-      initialRoute: AppRoutes.myReportlist,
+      initialRoute: AppRoutes.splash,
       getPages: AppRoutes.routes,
       //  home: InwardListScreen(),
       builder: (context, child) {

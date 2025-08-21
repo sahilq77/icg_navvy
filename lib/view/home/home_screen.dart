@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icg_navy/utility/app_images.dart';
 import 'package:icg_navy/utility/app_routes.dart';
+import 'package:icg_navy/view/bottomnavigation/bottomnavigation.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../utility/app_colors.dart';
@@ -577,19 +578,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: AppImages.myAppoinmentIcon,
                       color: const Color(0xFF0EA5E9).withOpacity(0.1),
                       text: 'My Appointment',
-                      tap: () {},
+                      tap: () {
+                        Get.toNamed(AppRoutes.appoinmentHistory);
+                      },
                     ),
                     _buildCard(
                       icon: AppImages.myReportIcon,
                       color: AppColors.green.withOpacity(0.1),
                       text: 'My Report',
-                      tap: () {},
+                      tap: () {
+                        Get.toNamed(AppRoutes.myReportlist);
+                      },
                     ),
                     _buildCard(
                       icon: AppImages.notificationIcon,
                       color: const Color(0xFF7441CD).withOpacity(0.1),
                       text: 'Notification',
-                      tap: () {},
+                      tap: () {
+                        Get.toNamed(AppRoutes.notification);
+                      },
                     ),
                   ],
                 ),
@@ -598,6 +605,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: CustomBottomBar(),
     );
   }
 

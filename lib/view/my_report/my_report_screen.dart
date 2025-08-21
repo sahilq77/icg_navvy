@@ -6,6 +6,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import '../../controller/appoinment_history/appoinment_history_controller.dart';
 import '../../utility/app_colors.dart';
 import '../../utility/app_images.dart';
+import '../bottomnavigation/bottomnavigation.dart' show CustomBottomBar;
 
 class MyReportScreen extends StatefulWidget {
   @override
@@ -355,6 +356,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
           ),
         ),
       ),
+       bottomNavigationBar: CustomBottomBar(),
     );
   }
 }

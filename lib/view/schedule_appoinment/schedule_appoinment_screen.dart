@@ -8,6 +8,7 @@ import 'package:icg_navy/utility/app_images.dart';
 import 'package:intl/intl.dart';
 
 import '../../utility/app_routes.dart';
+import '../bottomnavigation/bottomnavigation.dart';
 
 // Models (unchanged)
 class PersonalDetails {
@@ -767,6 +768,7 @@ class ScheduleAppointmentScreen extends StatelessWidget {
           );
         },
       ),
+      bottomNavigationBar: CustomBottomBar(),
     );
   }
 

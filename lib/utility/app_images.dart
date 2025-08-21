@@ -50,10 +50,10 @@ class AppImages {
   static const String calendergreyIcon = "assets/icons/calender-grey-icon.svg";
 
   //bottom navigation icons
-  static const String homeIcon = "assets/icons/home_icon.svg";
-  static const String crownIcon = "assets/icons/crown_icon.svg";
-  static const String leadsIcon = "assets/icons/leads_icon.svg";
-  static const String videoIcon = "assets/icons/video_icon.svg";
+  static const String homeIcon = "assets/icons/home-icon.svg";
+  static const String crownIcon = "assets/icons/bag-icon.svg";
+  static const String leadsIcon = "assets/icons/hospital-grey-icon.svg";
+  static const String videoIcon = "assets/icons/report-icon.svg";
   static const String profileIcon = "assets/icons/profile_icon.svg";
   static const String crownIcon2 = "assets/icons/crown2.svg";
 

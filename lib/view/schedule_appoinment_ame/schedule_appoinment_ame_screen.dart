@@ -8,6 +8,8 @@ import 'package:icg_navy/utility/app_colors.dart';
 import 'package:icg_navy/utility/app_images.dart';
 import 'package:icg_navy/utility/app_routes.dart';
 
+import '../bottomnavigation/bottomnavigation.dart';
+
 class AppointmentModel {
   String personalNumber;
   String rank;
@@ -791,6 +793,7 @@ class ScheduleAppointmentAmeScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: CustomBottomBar(),
     );
   }
 
