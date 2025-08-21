@@ -57,6 +57,7 @@ dependencies:
   open_file: ^3.5.9
   carousel_slider: ^5.0.0
   flutter_svg: ^2.1.0
+  dotted_border: ^2.0.0
 
 dev_dependencies:
   flutter_test:

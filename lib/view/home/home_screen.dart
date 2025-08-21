@@ -446,16 +446,38 @@ class _HomeScreenState extends State<HomeScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Dashboard", style: TextStyle(color: Colors.white)),
-        actions: [
-          // IconButton(
-          //   onPressed: _showFilterBottomSheet,
-          //   icon: const Icon(Icons.filter_list),
-          // ),
-        ],
-        elevation: 2,
         backgroundColor: AppColors.primary,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(
+            30.0,
+          ), // Height of the bottom area
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(
+              bottom: 8.0,
+            ), // Optional padding for better positioning
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Welcome To ICG  🧢",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.white,
+                      fontSize: 20,
+                    ),
+                    overflow: TextOverflow.ellipsis, // or TextOverflow.clip
+                    // maxLines: 2, // Allow up to 2 lines for the text
+                  ),
+                  Icon(Icons.power_settings_new, color: Colors.white, size: 40),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
 
       body: SingleChildScrollView(
@@ -527,49 +549,51 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: AppColors.grey,
                 ),
               ),
-              // Container(
-              //   padding: EdgeInsets.all(16),
-              //   decoration: BoxDecoration(
-              //     color: const Color(0xFFF9FAFB),
-              //     borderRadius: BorderRadius.circular(8),
-              //   ),
-              //   child: GridView.count(
-              //     physics: NeverScrollableScrollPhysics(),
-              //     shrinkWrap: true,
-              //     crossAxisCount: 2,
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9FAFB),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: GridView.count(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
 
-              //     crossAxisSpacing: 16.0,
-              //     mainAxisSpacing: 16.0,
-              //     childAspectRatio:
-              //         1.4, // Makes grid items rectangular (wider than tall)
-              //     children: [
-              //       _buildCard(
-              //         icon: AppImages.calenderPlusIcon,
-              //         color: Colors.blue[100],
-              //         text: 'Schedule Appointment',
-              //         tap: () {},
-              //       ),
-              //       _buildCard(
-              //         icon: AppImages.myAppoinmentIcon,
-              //         color: Colors.blue[100],
-              //         text: 'My Appointment',
-              //         tap: () {},
-              //       ),
-              //       _buildCard(
-              //         icon: AppImages.myReportIcon,
-              //         color: Colors.green[100],
-              //         text: 'My Report',
-              //         tap: () {},
-              //       ),
-              //       _buildCard(
-              //         icon: AppImages.notificationIcon,
-              //         color: Colors.purple[100],
-              //         text: 'Notification',
-              //         tap: () {},
-              //       ),
-              //     ],
-              //   ),
-              // ),
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  childAspectRatio:
+                      1.4, // Makes grid items rectangular (wider than tall)
+                  children: [
+                    _buildCard(
+                      icon: AppImages.calenderPlusIcon,
+                      color: const Color(0xFFE5E7EB),
+                      text: 'Schedule Appointment',
+                      tap: () {
+                        Get.toNamed(AppRoutes.appoinmentType);
+                      },
+                    ),
+                    _buildCard(
+                      icon: AppImages.myAppoinmentIcon,
+                      color: const Color(0xFF0EA5E9).withOpacity(0.1),
+                      text: 'My Appointment',
+                      tap: () {},
+                    ),
+                    _buildCard(
+                      icon: AppImages.myReportIcon,
+                      color: AppColors.green.withOpacity(0.1),
+                      text: 'My Report',
+                      tap: () {},
+                    ),
+                    _buildCard(
+                      icon: AppImages.notificationIcon,
+                      color: const Color(0xFF7441CD).withOpacity(0.1),
+                      text: 'Notification',
+                      tap: () {},
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

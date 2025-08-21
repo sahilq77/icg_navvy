@@ -17,11 +17,37 @@ class AppImages {
   static const String myReportIcon = "assets/icons/myreport.svg";
   static const String myAppoinmentIcon = "assets/icons/my_appoinment.svg";
   static const String notificationIcon = "assets/icons/notification_bell.svg";
-  static const String educationCateg = "assets/icons/education_categ.png";
-  static const String paymentSucces = "assets/payment_success.svg";
+  static const String opdIcon = "assets/icons/opd-icon.svg";
+  static const String ameIcon = "assets/icons/AMEicon.svg";
   static const String profile = "assets/profile.png";
   static const String nodata = "assets/images/nodata.png";
   static const String thankyou = "assets/icons/Group_2.svg";
+
+  //Schedule appoinment form IcONS
+  static const String personIcon = "assets/icons/PersonIcon.svg";
+  static const String groupIcon = "assets/icons/Group-Icon.svg";
+  static const String medicalkitIcon = "assets/icons/Medicalkit-Icon.svg";
+  static const String tokenIcon = "assets/icons/token-icon.svg";
+
+  //   //Schedule appoinment AME form IcONS
+  // static const String personIcon = "assets/icons/PersonIcon.svg";
+  // static const String groupIcon = "assets/icons/Group-Icon.svg";
+  static const String checkIcon = "assets/icons/check-icon.svg";
+  static const String calenderBlueIcon = "assets/icons/calender_blue.svg";
+  static const String uploadArrowIcon = "assets/icons/upload-arrow-icon.svg";
+  static const String serviceIcon = "assets/icons/serviceIcon.svg";
+  static const String declarationIcon = "assets/icons/declaration-icon.svg";
+  static const String heartbeatIcon = "assets/icons/heart-icon.svg";
+  static const String calenderCheckBlueIcon =
+      "assets/icons/calender-check-blue-icon.svg";
+  static const String uploadSkyIcon = "assets/icons/upload-sky-icon.svg";
+
+  // static const String groupIcon = "assets/icons/Group-Icon.svg";
+  static const String calenderPlusgreyIcon =
+      "assets/icons/calender-plus-grey-icon.svg";
+  static const String hospitalgreyIcon = "assets/icons/hospital-grey-icon.svg";
+  static const String doctorgreyIcon = "assets/icons/doctor-grey-icon.svg";
+  static const String calendergreyIcon = "assets/icons/calender-grey-icon.svg";
 
   //bottom navigation icons
   static const String homeIcon = "assets/icons/home_icon.svg";
@@ -30,8 +56,6 @@ class AppImages {
   static const String videoIcon = "assets/icons/video_icon.svg";
   static const String profileIcon = "assets/icons/profile_icon.svg";
   static const String crownIcon2 = "assets/icons/crown2.svg";
-
-
 
   //app icons
   static const String notificatioIcon = "assets/icons/bell_icon.svg";

@@ -42,7 +42,7 @@ class _ViewResultScreenState extends State<ViewResultScreen> {
       backgroundColor: AppColors.background,
 
       body: PDF(fitEachPage: true).fromUrl(
-        pdfUrl!,
+        "https://morth.nic.in/sites/default/files/dd12-13_0.pdf",
         placeholder: (progress) =>
             Center(child: CircularProgressIndicator(value: progress)),
         errorWidget: (error) => Center(child: Text(error.toString())),
