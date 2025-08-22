@@ -58,7 +58,7 @@ class _ApppointmentTypeScreenState extends State<ApppointmentTypeScreen> {
         centerTitle: false,
         title: Text(
           'Schedule appointment',
-          textAlign: TextAlign.center,
+          // textAlign: TextAlign.center,
           style: GoogleFonts.inter(
             fontWeight: FontWeight.w600,
             color: AppColors.defaultblack,
@@ -66,7 +66,7 @@ class _ApppointmentTypeScreenState extends State<ApppointmentTypeScreen> {
           ),
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(10),
+          preferredSize: Size.fromHeight(0),
           child: Divider(
             color: const Color(0xFFDADADA),
             // thickness: 2,
@@ -110,7 +110,7 @@ class _ApppointmentTypeScreenState extends State<ApppointmentTypeScreen> {
                     color: const Color(0xFFE5E7EB),
                     text: 'OPD',
                     tap: () {
-                         Get.toNamed(AppRoutes.scheduleAppinment);
+                      Get.toNamed(AppRoutes.scheduleAppinment);
                     },
                   ),
                   _buildCard(
@@ -118,7 +118,7 @@ class _ApppointmentTypeScreenState extends State<ApppointmentTypeScreen> {
                     color: const Color(0xFFE5E7EB),
                     text: 'AME / PME',
                     tap: () {
-                       Get.toNamed(AppRoutes.scheduleAppinmentAME);
+                      Get.toNamed(AppRoutes.scheduleAppinmentAME);
                     },
                   ),
                 ],

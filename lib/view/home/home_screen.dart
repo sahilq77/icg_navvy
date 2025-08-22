@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: AppColors.primary,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(
-              40.0,
+              30.0,
             ), // Height of the bottom area
             child: Container(
               alignment: Alignment.center,
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w600,
                             color: AppColors.white,
-                            fontSize: 20,
+                            fontSize: 18,
                           ),
                           overflow:
                               TextOverflow.ellipsis, // or TextOverflow.clip
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Icon(
                         Icons.power_settings_new,
                         color: Colors.white,
-                        size: 40,
+                        size: 30,
                       ),
                     ),
                   ],

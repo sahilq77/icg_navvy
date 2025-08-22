@@ -253,7 +253,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
             ),
           ),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(10),
+            preferredSize: Size.fromHeight(0),
             child: Divider(
               color: const Color(0xFFDADADA),
               // thickness: 2,
@@ -750,7 +750,7 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                                             ? AppColors.primary.withOpacity(
                                                 0.3,
                                               ) // Selected token color
-                                            : Colors.green.withOpacity(0.3))
+                                            : Colors.green.withOpacity(0.1))
                                       : const Color(
                                           0xFFFFEFEF,
                                         ), // Unavailable token color
