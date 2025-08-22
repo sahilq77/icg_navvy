@@ -1,66 +1,141 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:icg_navy/utility/app_images.dart';
 
+class WelcomeScreen extends StatefulWidget {
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
 
-import '../../utility/app_colors.dart';
-import '../../utility/app_routes.dart';
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  final PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
 
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+  final List<Map<String, String>> _slides = [
+    {
+      "title": "Welcome",
+      "description":
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt",
+      "image": AppImages.welcome1,
+    },
+    {
+      "title": "Welcome",
+      "description":
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt",
+      "image": AppImages.welcome2,
+    },
+    {
+      "title": "Welcome",
+      "description":
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt",
+      "image": AppImages.welcome3,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Spacer(),
-            const Icon(
-              Icons.medical_services,
-              size: 100,
-              color: AppColors.primary,
+      body: Stack(
+        children: [
+          // Background Image at bottom
+          PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            itemCount: _slides.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.15,
+                  vertical: screenHeight * 0.2,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _slides[index]["title"]!,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.01),
+                    Text(
+                      _slides[index]["description"]!,
+
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              _slides[_currentPage]["image"]!,
+              fit: BoxFit.fitWidth,
             ),
-            const SizedBox(height: 24),
-            const Text(
-              'Welcome to Trailo',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Track your medications, set reminders, and stay healthy with ease.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                Get.toNamed(AppRoutes.login);
-              },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+          ),
+          // PageView for slides
+
+          // Navigation indicators
+          Positioned(
+            bottom: 100,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                _slides.length,
+                (index) => Container(
+                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentPage == index ? Colors.blue : Colors.grey,
+                  ),
                 ),
               ),
-              child: const Text(
-                'Get Started',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
             ),
-            // const SizedBox(height: 16),
-            // TextButton(
-            //   onPressed: () {
-            //     Navigator.pushNamed(context, '/signup');
-            //   },
-            //   child: const Text(
-            //     'Create an Account',
-            //     style: TextStyle(fontSize: 16),
-            //   ),
-            // ),
-          ],
-        ),
+          ),
+          // Skip and Next buttons
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: TextButton(
+              onPressed: () {
+                // Handle skip
+              },
+              child: Text("Skip"),
+            ),
+          ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: TextButton(
+              onPressed: () {
+                if (_currentPage < _slides.length - 1) {
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                  );
+                } else {
+                  // Handle completion
+                }
+              },
+              child: Text(_currentPage == _slides.length - 1 ? "Done" : "Next"),
+            ),
+          ),
+        ],
       ),
     );
   }

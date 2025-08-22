@@ -107,81 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Medical Officer Dashboard',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.defaultblack,
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.005),
-                Text(
-                  'Track Pending, Processed & Approved Appointment',
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.grey,
-                  ),
-                ),
-
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 16),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF9FAFB),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: GridView.count(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-
-                    crossAxisSpacing: 16.0,
-                    mainAxisSpacing: 16.0,
-                    childAspectRatio:
-                        1.4, // Makes grid items rectangular (wider than tall)
-                    children: [
-                      _buildCard(
-                        icon: AppImages.pendingIcon,
-                        color: const Color(0xFFFEF9C3),
-                        text: 'Total Number of Pending',
-                        tap: () {
-                          Get.toNamed(AppRoutes.pendingAppoinmentMedical);
-                        },
-                      ),
-                      _buildCard(
-                        icon: AppImages.processedIcon,
-                        color: const Color(0xFFFFEDD5),
-                        text: 'Total Number of Processed',
-                        tap: () {
-                          Get.toNamed(AppRoutes.proceessedAppoinmetMedical);
-                        },
-                      ),
-                      _buildCard(
-                        icon: AppImages.approvedIcon,
-                        color: AppColors.green.withOpacity(0.1),
-                        text: 'Total Number of Approved',
-                        tap: () {
-                          Get.toNamed(AppRoutes.approvedAppoinmentMedical);
-                        },
-                      ),
-                      _buildCard(
-                        icon: AppImages.notificationIcon,
-                        color: const Color(0xFF7441CD).withOpacity(0.1),
-                        text: 'Notification',
-                        tap: () {
-                          Get.toNamed(AppRoutes.notification);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: _approvingAuthInterface(screenHeight),
             // Column(
             //   crossAxisAlignment: CrossAxisAlignment.start,
             //   children: [
@@ -258,8 +184,8 @@ class _HomeScreenState extends State<HomeScreen> {
             //         shrinkWrap: true,
             //         crossAxisCount: 2,
 
-            //         crossAxisSpacing: 16.0,
-            //         mainAxisSpacing: 16.0,
+            //         crossAxisSpacing: 10.0,
+            // mainAxisSpacing: 10.0,
             //         childAspectRatio:
             //             1.4, // Makes grid items rectangular (wider than tall)
             //         children: [
@@ -304,6 +230,162 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         bottomNavigationBar: CustomBottomBar(),
       ),
+    );
+  }
+
+  Widget _approvingAuthInterface(double screenHeight) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Approving Authority Dashboard',
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.defaultblack,
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.005),
+        Text(
+          'Track Pending, Processed & Approved Appointment',
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: AppColors.grey,
+          ),
+        ),
+
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF9FAFB),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: GridView.count(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 2,
+
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+            childAspectRatio:
+                1.4, // Makes grid items rectangular (wider than tall)
+            children: [
+              _buildCard(
+                icon: AppImages.pendingIcon,
+                color: const Color(0xFFFEF9C3),
+                text: 'Total Number of Pending',
+                tap: () {
+                  Get.toNamed(AppRoutes.pendingAppoinmentAuth);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.processedIcon,
+                color: const Color(0xFFFFEDD5),
+                text: 'Total Number of Processed',
+                tap: () {
+                  Get.toNamed(AppRoutes.proceessedAppoinmetAuth);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.approvedIcon,
+                color: AppColors.green.withOpacity(0.1),
+                text: 'Total Number of Approved',
+                tap: () {
+                  Get.toNamed(AppRoutes.approvedAppoinmentAuth);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.notificationIcon,
+                color: const Color(0xFF7441CD).withOpacity(0.1),
+                text: 'Notification',
+                tap: () {
+                  Get.toNamed(AppRoutes.notification);
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _medicalnterface(double screenHeight) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Medical Officer Dashboard',
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.defaultblack,
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.005),
+        Text(
+          'Track Pending, Processed & Approved Appointment',
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: AppColors.grey,
+          ),
+        ),
+
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF9FAFB),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: GridView.count(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 2,
+
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+            childAspectRatio:
+                1.4, // Makes grid items rectangular (wider than tall)
+            children: [
+              _buildCard(
+                icon: AppImages.pendingIcon,
+                color: const Color(0xFFFEF9C3),
+                text: 'Total Number of Pending',
+                tap: () {
+                  Get.toNamed(AppRoutes.pendingAppoinmentMedical);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.processedIcon,
+                color: const Color(0xFFFFEDD5),
+                text: 'Total Number of Processed',
+                tap: () {
+                  Get.toNamed(AppRoutes.proceessedAppoinmetMedical);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.approvedIcon,
+                color: AppColors.green.withOpacity(0.1),
+                text: 'Total Number of Approved',
+                tap: () {
+                  Get.toNamed(AppRoutes.approvedAppoinmentMedical);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.notificationIcon,
+                color: const Color(0xFF7441CD).withOpacity(0.1),
+                text: 'Notification',
+                tap: () {
+                  Get.toNamed(AppRoutes.notification);
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

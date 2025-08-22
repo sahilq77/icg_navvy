@@ -5,9 +5,9 @@ class AppImages {
   static const String applogo = "assets/applogo.jpg";
   static const String splashlogo = "assets/images/logo.png";
   static const String logoP = "assets/logo_p.png";
-  static const String welcome1 = "assets/welcome1.png";
-  static const String welcome2 = "assets/welcome2.png";
-  static const String welcome3 = "assets/welcome3.png";
+  static const String welcome1 = "assets/images/ship1.png";
+  static const String welcome2 = "assets/images/ship2.png";
+  static const String welcome3 = "assets/images/ship3.png";
 
   //category images/icons
   static const String calenderCheck = "assets/icons/calender_check.svg";
@@ -62,6 +62,12 @@ class AppImages {
   static const String videoIcon = "assets/icons/report-icon.svg";
   static const String profileIcon = "assets/icons/profile_icon.svg";
   static const String crownIcon2 = "assets/icons/crown2.svg";
+
+  //bottom navigation icons  (medical interface)
+  static const String myAppoinmnetIcon =
+      "assets/icons/appoinment-grey-icon.svg";
+  static const String bellGreyIcon = "assets/icons/bell-grey-icon.svg";
+  static const String switchGrey = "assets/icons/switch-grey-icon.svg";
 
   //app icons
   static const String notificatioIcon = "assets/icons/bell_icon.svg";

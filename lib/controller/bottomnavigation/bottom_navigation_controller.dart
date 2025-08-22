@@ -5,14 +5,18 @@ import '../../utility/app_routes.dart';
 class BottomNavigationController extends GetxController {
   RxInt selectedIndex = 0.obs;
 
+  // final List<String> routes = [
+  //   AppRoutes.home,
+  //   AppRoutes.scheduleAppinmentAME,
+  //   AppRoutes.scheduleAppinment,
+  //   AppRoutes.myReportlist,
+  // ];
   final List<String> routes = [
     AppRoutes.home,
-    AppRoutes.scheduleAppinmentAME,
-
-    AppRoutes.scheduleAppinment,
+    AppRoutes.pendingAppoinmentMedical,
+    AppRoutes.notification,
     AppRoutes.myReportlist,
   ];
-
   @override
   void onInit() {
     super.onInit();

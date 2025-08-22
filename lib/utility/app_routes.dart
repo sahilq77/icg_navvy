@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 
 import '../view/appoinment/appoinment_history_screen.dart';
 import '../view/apppointment_type/apppointment_type_screen.dart';
+import '../view/approving_authority/approved_appoinments/aprroved_appoinment/aprroved_appoinment_auth_screen.dart';
+import '../view/approving_authority/pending_appoinments/pending_appoinment_autho_screen.dart';
+import '../view/approving_authority/processed_appoinments/processed_appoinment_auth_screen.dart';
 import '../view/forgot_password/enter_new_password_screen.dart';
 import '../view/forgot_password/forgot_password_screen.dart';
 import '../view/home/home_screen.dart';
@@ -42,11 +45,12 @@ class AppRoutes {
   static const String pendingAppoinmentMedical = '/pending-appoinment-medical';
 
   static const String proceessedAppoinmetMedical =
-      '/Proceessed-Appoinmet-medical';
-  static const String approvedAppoinmentMedical = '/approved-Appoinmet-medical';
-  static const String pickedbyoutwarddetail = '/pickedby_outward_detail';
-  static const String checkedbyoutward = '/checkedby_outward';
-  static const String checkedbyoutwarddetail = '/checkedby_outward_detail';
+      '/proceessed-appoinmet-medical';
+  static const String approvedAppoinmentMedical = '/approved-appoinmet-medical';
+  static const String pendingAppoinmentAuth = '/pending-appoinment-auth';
+  static const String proceessedAppoinmetAuth = '/proceessed-appoinmet-auth';
+  static const String approvedAppoinmentAuth = '/approved-appoinmet-auth';
+
   static const String receiptform = '/receipt_form';
   static const String packedbyoutward = '/packedby_outward';
   static const String packedbyoutwarddetail = '/packedby_outward_detail';
@@ -153,6 +157,23 @@ class AppRoutes {
     GetPage(
       name: approvedAppoinmentMedical,
       page: () => ApprovedAppoinmentScreen(),
+      transition: Transition.fadeIn,
+    ),
+
+    GetPage(
+      name: pendingAppoinmentAuth,
+      page: () => PendingAppoinmentAuthoScreen(),
+      transition: Transition.fadeIn,
+    ),
+
+    GetPage(
+      name: proceessedAppoinmetAuth,
+      page: () => ProcessedAppoinmentAuthScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: approvedAppoinmentAuth,
+      page: () => AprrovedAppoinmentAuthScreen(),
       transition: Transition.fadeIn,
     ),
   ];

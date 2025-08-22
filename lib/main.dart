@@ -152,7 +152,7 @@ class MyApp extends StatelessWidget {
           color: AppColors.primary,
         ),
       ),
-      initialRoute: AppRoutes.home,
+      initialRoute: AppRoutes.welcome,
       getPages: AppRoutes.routes,
       //  home: InwardListScreen(),
       builder: (context, child) {
