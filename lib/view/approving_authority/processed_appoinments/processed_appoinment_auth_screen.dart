@@ -335,7 +335,7 @@ class _ProcessedAppoinmentAuthScreenState
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(10),
+          preferredSize: Size.fromHeight(0),
           child: Divider(color: const Color(0xFFDADADA), height: 0),
         ),
       ),
@@ -533,7 +533,6 @@ class AppointmentCard extends StatelessWidget {
                 ),
               ],
             ),
-            // Uncomment if you want to include the button
             SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -544,13 +543,18 @@ class AppointmentCard extends StatelessWidget {
                     child: Text(
                       'Accept',
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 12, // Reduced font size
                         fontWeight: FontWeight.w500,
                         color: AppColors.white,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.green,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 13,
+                        vertical: 8,
+                      ), // Smaller padding
+                      minimumSize: Size(0, 40), // Smaller minimum size
                     ),
                   ),
                 ),
@@ -561,13 +565,18 @@ class AppointmentCard extends StatelessWidget {
                     child: Text(
                       'Decline',
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 13, // Reduced font size
                         fontWeight: FontWeight.w500,
                         color: AppColors.white,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.error,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ), // Smaller padding
+                      minimumSize: Size(0, 40), // Smaller minimum size
                     ),
                   ),
                 ),

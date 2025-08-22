@@ -334,7 +334,7 @@ class _ProceessedAppoinmetMedicalScreenState
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(10),
+          preferredSize: Size.fromHeight(0),
           child: Divider(color: const Color(0xFFDADADA), height: 0),
         ),
       ),

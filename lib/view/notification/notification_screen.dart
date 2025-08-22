@@ -36,7 +36,7 @@ class NotificationScreen extends StatelessWidget {
             ),
           ),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(10),
+            preferredSize: Size.fromHeight(0),
             child: Divider(
               color: const Color(0xFFDADADA),
               // thickness: 2,
@@ -44,53 +44,53 @@ class NotificationScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: ListView.builder(
-          padding: EdgeInsets.all(16),
+        body: ListView.separated(
           itemCount: 10,
-          itemBuilder: (BuildContext context, int inde) {
-            return Column(
-              children: [
-                ListTile(
-                  // horizontalTitleGap: 1,
-                  leading: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.notifications,
-                        size: 25,
-                        color: AppColors.background,
-                      ),
-                    ),
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
+              child: ListTile(
+                // horizontalTitleGap: 1,
+                leading: Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
                   ),
-                  title: Text(
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.defaultblack,
+                  child: Center(
+                    child: Icon(
+                      Icons.notifications,
+                      size: 25,
+                      color: AppColors.background,
                     ),
-                    overflow: TextOverflow.ellipsis, // or TextOverflow.clip
-                    maxLines: 2, // Allow up to 2 lines for the text
-                  ),
-                  trailing: Text(
-                    "2hrs ago",
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.grey,
-                    ),
-                    overflow: TextOverflow.ellipsis, // or TextOverflow.clip
-                    maxLines: 2, // Allow up to 2 lines for the text
                   ),
                 ),
-                Divider(),
-              ],
+                title: Text(
+                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.defaultblack,
+                  ),
+                  overflow: TextOverflow.ellipsis, // or TextOverflow.clip
+                  maxLines: 2, // Allow up to 2 lines for the text
+                ),
+                trailing: Text(
+                  "2hrs ago",
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.grey,
+                  ),
+                  overflow: TextOverflow.ellipsis, // or TextOverflow.clip
+                  maxLines: 2, // Allow up to 2 lines for the text
+                ),
+              ),
             );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider();
           },
         ),
         bottomNavigationBar: CustomBottomBar(),

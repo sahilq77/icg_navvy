@@ -504,21 +504,28 @@ class AppointmentCard extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () => Get.back(),
                     style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
+                      minimumSize: const Size(
+                        double.infinity,
+                        40,
+                      ), // Smaller minimum size
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       side: BorderSide(color: Colors.grey[300]!, width: 1.5),
                       foregroundColor: AppColors.defaultblack,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ), // Smaller padding
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.download),
+                        Icon(Icons.download, size: 16), // Reduced icon size
                         Text(
                           'Download',
                           style: GoogleFonts.inter(
-                            fontSize: 14,
+                            fontSize: 12, // Reduced font size
                             fontWeight: FontWeight.w500,
                             color: AppColors.defaultblack,
                           ),
@@ -534,13 +541,18 @@ class AppointmentCard extends StatelessWidget {
                     child: Text(
                       'Reschedule',
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 12, // Reduced font size
                         fontWeight: FontWeight.w500,
                         color: AppColors.white,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ), // Smaller padding
+                      minimumSize: Size(0, 40), // Smaller minimum size
                     ),
                   ),
                 ),
@@ -551,13 +563,18 @@ class AppointmentCard extends StatelessWidget {
                     child: Text(
                       'Cancel',
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 12, // Reduced font size
                         fontWeight: FontWeight.w500,
                         color: AppColors.white,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ), // Smaller padding
+                      minimumSize: Size(0, 40), // Smaller minimum size
                     ),
                   ),
                 ),

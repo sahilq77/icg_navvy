@@ -509,13 +509,18 @@ class AppointmentCard extends StatelessWidget {
               child: Text(
                 'Download Report',
                 style: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: 12, // Reduced font size
                   fontWeight: FontWeight.w500,
                   color: AppColors.white,
                 ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ), // Smaller padding
+                minimumSize: Size(double.infinity, 40), // Smaller minimum size
               ),
             ),
           ],
