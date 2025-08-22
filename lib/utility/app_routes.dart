@@ -6,6 +6,9 @@ import '../view/forgot_password/enter_new_password_screen.dart';
 import '../view/forgot_password/forgot_password_screen.dart';
 import '../view/home/home_screen.dart';
 import '../view/login/login_screen.dart';
+import '../view/medical_officer/approved_appoinments/approved_appoinment_screen.dart';
+import '../view/medical_officer/pending_appoinments/pending_appoinment_medical_screen.dart';
+import '../view/medical_officer/processed_appoinments/proceessed_appoinmet_medical_screen.dart';
 import '../view/my_report/my_report_screen.dart';
 import '../view/notification/notification_screen.dart';
 import '../view/schedule_appoinment/schedule_appoinment_screen.dart';
@@ -36,9 +39,11 @@ class AppRoutes {
   static const String myReportlist = '/myReport-list';
 
   static const String notification = '/notification';
-  static const String outwardList = '/outward_list';
-  static const String outwarddetail = '/outward_detail';
-  static const String pickedbyoutward = '/pickedby_outward';
+  static const String pendingAppoinmentMedical = '/pending-appoinment-medical';
+
+  static const String proceessedAppoinmetMedical =
+      '/Proceessed-Appoinmet-medical';
+  static const String approvedAppoinmentMedical = '/approved-Appoinmet-medical';
   static const String pickedbyoutwarddetail = '/pickedby_outward_detail';
   static const String checkedbyoutward = '/checkedby_outward';
   static const String checkedbyoutwarddetail = '/checkedby_outward_detail';
@@ -133,6 +138,21 @@ class AppRoutes {
     GetPage(
       name: notification,
       page: () => NotificationScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: pendingAppoinmentMedical,
+      page: () => PendingAppoinmentMedicalScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: proceessedAppoinmetMedical,
+      page: () => ProceessedAppoinmetMedicalScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: approvedAppoinmentMedical,
+      page: () => ApprovedAppoinmentScreen(),
       transition: Transition.fadeIn,
     ),
   ];

@@ -3,22 +3,22 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:icg_navy/controller/bottomnavigation/bottom_navigation_controller.dart';
-import '../../controller/appoinment_history/appoinment_history_controller.dart';
-import '../../controller/my_report/my_report_controlller.dart';
-import '../../utility/app_colors.dart';
-import '../../utility/app_images.dart';
-import '../bottomnavigation/bottomnavigation.dart' show CustomBottomBar;
+import 'package:icg_navy/controller/medical_officer/pending_appoinments_medical/pending_appoinments_medical_controller.dart';
+import '../../../controller/appoinment_history/appoinment_history_controller.dart';
+import '../../../controller/my_report/my_report_controlller.dart';
+import '../../../utility/app_colors.dart';
+import '../../../utility/app_images.dart';
+import '../../bottomnavigation/bottomnavigation.dart' show CustomBottomBar;
 
-class MyReportScreen extends StatefulWidget {
+class ApprovedAppoinmentScreen extends StatefulWidget {
   @override
-  State<MyReportScreen> createState() => _MyReportScreenState();
+  State<ApprovedAppoinmentScreen> createState() =>
+      _ApprovedAppoinmentScreenState();
 }
 
-class _MyReportScreenState extends State<MyReportScreen> {
-  final MyReportControlller controller = Get.put(MyReportControlller());
-  final BottomNavigationController bottomController = Get.put(
-    BottomNavigationController(),
+class _ApprovedAppoinmentScreenState extends State<ApprovedAppoinmentScreen> {
+  final PendingAppoinmentsMedicalController controller = Get.put(
+    PendingAppoinmentsMedicalController(),
   );
 
   void _showFilterBottomSheet(BuildContext context) {
@@ -282,87 +282,84 @@ class _MyReportScreenState extends State<MyReportScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return WillPopScope(
-      onWillPop: () => bottomController.onWillPop(),
-      child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
-          backgroundColor: AppColors.background,
-          elevation: 0,
-          centerTitle: false,
-          title: Text(
-            'My Report',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.inter(
-              fontWeight: FontWeight.w600,
-              color: AppColors.defaultblack,
-              fontSize: 18,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        centerTitle: false,
+        title: Text(
+          'Approved Appoinment',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.w600,
+            color: AppColors.defaultblack,
+            fontSize: 18,
           ),
-          actions: [
-            GestureDetector(
-              onTap: () {
-                _showFilterBottomSheet(context);
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  border: Border.all(color: Color(0xFFDADADA), width: 1.0),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Filter',
-                      style: GoogleFonts.inter(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(width: screenWidth * 0.03),
-                    Icon(
-                      Icons.filter_alt_outlined,
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              _showFilterBottomSheet(context);
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Color(0xFFFFFFFF),
+                border: Border.all(color: Color(0xFFDADADA), width: 1.0),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Filter',
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black,
-                      size: 20,
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(width: screenWidth * 0.03),
+                  Icon(
+                    Icons.filter_alt_outlined,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                ],
               ),
             ),
-          ],
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(10),
-            child: Divider(color: const Color(0xFFDADADA), height: 0),
           ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(10),
+          child: Divider(color: const Color(0xFFDADADA), height: 0),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Obx(
-            () => ListView.builder(
-              itemCount: controller.appointments.length,
-              itemBuilder: (context, index) {
-                final appointment = controller.appointments[index];
-                return AppointmentCard(
-                  name: appointment.name,
-                  relation: appointment.relation,
-                  age: appointment.age,
-                  gender: appointment.gender,
-                  status: appointment.status,
-                  type: appointment.type,
-                  hospital: appointment.hospital,
-                  department: appointment.department,
-                  date: appointment.date,
-                );
-              },
-            ),
-          ),
-        ),
-        bottomNavigationBar: CustomBottomBar(),
       ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Obx(
+          () => ListView.builder(
+            itemCount: controller.appointments.length,
+            itemBuilder: (context, index) {
+              final appointment = controller.appointments[index];
+              return AppointmentCard(
+                name: appointment.name,
+                relation: appointment.relation,
+                age: appointment.age,
+                gender: appointment.gender,
+                status: appointment.status,
+                type: appointment.type,
+                hospital: appointment.hospital,
+                department: appointment.department,
+                date: appointment.date,
+              );
+            },
+          ),
+        ),
+      ),
+      //  bottomNavigationBar: CustomBottomBar(),
     );
   }
 }
@@ -410,14 +407,20 @@ class AppointmentCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  name,
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                // Handle overflow for name
+                Expanded(
+                  child: Text(
+                    name,
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis, // Truncate with ellipsis
+                    maxLines: 1, // Limit to one line
                   ),
                 ),
+                // Uncomment if you want to include the status container
                 // Container(
                 //   padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 //   decoration: BoxDecoration(
@@ -431,10 +434,13 @@ class AppointmentCard extends StatelessWidget {
                 //       fontWeight: FontWeight.w500,
                 //       color: Colors.black,
                 //     ),
+                //     overflow: TextOverflow.ellipsis,
+                //     maxLines: 1,
                 //   ),
                 // ),
               ],
             ),
+            // Handle overflow for relation, age, and gender
             Text(
               '$relation • $age years • $gender',
               style: GoogleFonts.inter(
@@ -442,18 +448,25 @@ class AppointmentCard extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 color: Colors.grey,
               ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
             SizedBox(height: 8.0),
             Row(
               children: [
                 SvgPicture.asset(AppImages.calenderPlusgreyIcon),
                 SizedBox(width: 4.0),
-                Text(
-                  type,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                // Handle overflow for type
+                Expanded(
+                  child: Text(
+                    type,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
               ],
@@ -463,12 +476,17 @@ class AppointmentCard extends StatelessWidget {
               children: [
                 SvgPicture.asset(AppImages.hospitalgreyIcon),
                 SizedBox(width: 4.0),
-                Text(
-                  hospital,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                // Handle overflow for hospital
+                Expanded(
+                  child: Text(
+                    hospital,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
               ],
@@ -478,12 +496,17 @@ class AppointmentCard extends StatelessWidget {
               children: [
                 SvgPicture.asset(AppImages.doctorgreyIcon),
                 SizedBox(width: 4.0),
-                Text(
-                  department,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                // Handle overflow for department
+                Expanded(
+                  child: Text(
+                    department,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
               ],
@@ -493,31 +516,37 @@ class AppointmentCard extends StatelessWidget {
               children: [
                 SvgPicture.asset(AppImages.calendergreyIcon),
                 SizedBox(width: 4.0),
-                Text(
-                  date,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                // Handle overflow for date
+                Expanded(
+                  child: Text(
+                    date,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8.0),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                'Download Report',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.white,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
-            ),
+            // Uncomment if you want to include the button
+            // SizedBox(height: 8.0),
+            // ElevatedButton(
+            //   onPressed: () {},
+            //   child: Text(
+            //     'Download Report',
+            //     style: GoogleFonts.inter(
+            //       fontSize: 14,
+            //       fontWeight: FontWeight.w500,
+            //       color: AppColors.white,
+            //     ),
+            //   ),
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: AppColors.primary,
+            //   ),
+            // ),
           ],
         ),
       ),

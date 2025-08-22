@@ -9,6 +9,7 @@ import 'package:icg_navy/utility/app_routes.dart';
 import 'package:icg_navy/view/bottomnavigation/bottomnavigation.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../controller/bottomnavigation/bottom_navigation_controller.dart';
 import '../../utility/app_colors.dart';
 import '../../utility/app_utility.dart';
 
@@ -26,7 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // final TransportController transportController = Get.put(
   //   TransportController(),
   // );
-
+  final BottomNavigationController bottomController = Get.put(
+    BottomNavigationController(),
+  );
   final List<String> _months = [
     'January',
     'February',
@@ -47,646 +50,260 @@ class _HomeScreenState extends State<HomeScreen> {
     return List.generate(10, (index) => currentYear - index);
   }
 
-  // void _showFilterBottomSheet() {
-  //   String? tempSelectedCompanyId =
-  //       controller.selectedCompanyId.value.isNotEmpty
-  //       ? controller.selectedCompanyId.value
-  //       : null;
-  //   String? tempSelectedDivisionId =
-  //       controller.selectedDivisionId.value.isNotEmpty
-  //       ? controller.selectedDivisionId.value
-  //       : null;
-  //   String? tempSelectedTransportId =
-  //       controller.selectedTransportId.value.isNotEmpty
-  //       ? controller.selectedTransportId.value
-  //       : null;
-  //   String? tempSelectedMonth = controller.selectedMonth.value.isNotEmpty
-  //       ? controller.selectedMonth.value
-  //       : null;
-  //   int? tempSelectedYear = controller.selectedYear.value != 0
-  //       ? controller.selectedYear.value
-  //       : null;
-
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  //     ),
-  //     builder: (context) {
-  //       return StatefulBuilder(
-  //         builder: (BuildContext context, StateSetter setBottomSheetState) {
-  //           return Padding(
-  //             padding: EdgeInsets.only(
-  //               bottom: MediaQuery.of(context).viewInsets.bottom,
-  //               left: 16,
-  //               right: 16,
-  //               top: 16,
-  //             ),
-  //             child: SingleChildScrollView(
-  //               child: Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   const Text(
-  //                     'Filter',
-  //                     style: TextStyle(
-  //                       fontSize: 20,
-  //                       fontWeight: FontWeight.bold,
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 16),
-  //                   Obx(
-  //                     () => SizedBox(
-  //                       height: 55,
-  //                       child: DropdownSearch<String>(
-  //                         popupProps: const PopupProps.menu(
-  //                           showSearchBox: true,
-  //                           showSelectedItems: true,
-  //                           searchFieldProps: TextFieldProps(
-  //                             decoration: InputDecoration(
-  //                               labelText: 'Search Company',
-  //                               border: OutlineInputBorder(),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         items: companyController.getCompanyNames(),
-  //                         dropdownDecoratorProps: const DropDownDecoratorProps(
-  //                           dropdownSearchDecoration: InputDecoration(
-  //                             labelText: 'Select Company',
-  //                             border: OutlineInputBorder(),
-  //                             contentPadding: EdgeInsets.symmetric(
-  //                               horizontal: 12,
-  //                             ),
-  //                             constraints: BoxConstraints.tightFor(height: 55),
-  //                           ),
-  //                           baseStyle: TextStyle(fontSize: 16),
-  //                         ),
-  //                         onChanged: (String? selectedCompanyName) {
-  //                           if (selectedCompanyName != null) {
-  //                             setState(() {
-  //                               tempSelectedCompanyId = companyController
-  //                                   .getCompanyId(selectedCompanyName);
-  //                               tempSelectedDivisionId = null;
-  //                               divisonController.divisionList.clear();
-  //                               divisonController.fetchDivison(
-  //                                 context: context,
-  //                                 comapnyID: tempSelectedCompanyId,
-  //                               );
-  //                             });
-  //                           }
-  //                         },
-  //                         selectedItem: tempSelectedCompanyId != null
-  //                             ? companyController.getCompanyNameById(
-  //                                 tempSelectedCompanyId!,
-  //                               )
-  //                             : null,
-  //                         enabled: !companyController.isLoading.value,
-  //                         dropdownBuilder: (context, selectedItem) {
-  //                           return Container(
-  //                             alignment: Alignment.centerLeft,
-  //                             child: Text(
-  //                               selectedItem ?? 'Select Company',
-  //                               style: TextStyle(
-  //                                 fontSize: 16,
-  //                                 color: companyController.isLoading.value
-  //                                     ? Colors.grey
-  //                                     : Colors.black,
-  //                               ),
-  //                             ),
-  //                           );
-  //                         },
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 16),
-  //                   Obx(
-  //                     () => SizedBox(
-  //                       height: 55,
-  //                       child: DropdownSearch<String>(
-  //                         popupProps: const PopupProps.menu(
-  //                           showSearchBox: true,
-  //                           showSelectedItems: true,
-  //                           searchFieldProps: TextFieldProps(
-  //                             decoration: InputDecoration(
-  //                               labelText: 'Search Division',
-  //                               border: OutlineInputBorder(),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         items: divisonController.getDivisionNames(),
-  //                         dropdownDecoratorProps: const DropDownDecoratorProps(
-  //                           dropdownSearchDecoration: InputDecoration(
-  //                             labelText: 'Select Division',
-  //                             border: OutlineInputBorder(),
-  //                             contentPadding: EdgeInsets.symmetric(
-  //                               horizontal: 12,
-  //                             ),
-  //                             constraints: BoxConstraints.tightFor(height: 55),
-  //                           ),
-  //                           baseStyle: TextStyle(fontSize: 16),
-  //                         ),
-  //                         onChanged: (String? selectedDivisionName) {
-  //                           if (selectedDivisionName != null) {
-  //                             setBottomSheetState(() {
-  //                               tempSelectedDivisionId = divisonController
-  //                                   .getDivisionId(selectedDivisionName);
-  //                             });
-  //                           }
-  //                         },
-  //                         selectedItem: tempSelectedDivisionId != null
-  //                             ? divisonController.getDivisionNameById(
-  //                                 tempSelectedDivisionId!,
-  //                               )
-  //                             : null,
-  //                         enabled: !divisonController.isLoading.value,
-  //                         dropdownBuilder: (context, selectedItem) {
-  //                           return Container(
-  //                             alignment: Alignment.centerLeft,
-  //                             child: Text(
-  //                               selectedItem ?? 'Select Division',
-  //                               style: TextStyle(
-  //                                 fontSize: 16,
-  //                                 color: divisonController.isLoading.value
-  //                                     ? Colors.grey
-  //                                     : Colors.black,
-  //                               ),
-  //                             ),
-  //                           );
-  //                         },
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 16),
-  //                   Obx(
-  //                     () => SizedBox(
-  //                       height: 55,
-  //                       child: DropdownSearch<String>(
-  //                         popupProps: const PopupProps.menu(
-  //                           showSearchBox: true,
-  //                           showSelectedItems: true,
-  //                           searchFieldProps: TextFieldProps(
-  //                             decoration: InputDecoration(
-  //                               labelText: 'Search Transport',
-  //                               border: OutlineInputBorder(),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         items: transportController.getTransportNames(),
-  //                         dropdownDecoratorProps: const DropDownDecoratorProps(
-  //                           dropdownSearchDecoration: InputDecoration(
-  //                             labelText: 'Select Transport',
-  //                             border: OutlineInputBorder(),
-  //                             contentPadding: EdgeInsets.symmetric(
-  //                               horizontal: 12,
-  //                             ),
-  //                             constraints: BoxConstraints.tightFor(height: 55),
-  //                           ),
-  //                           baseStyle: TextStyle(fontSize: 16),
-  //                         ),
-  //                         onChanged: (String? selectedTransportName) {
-  //                           if (selectedTransportName != null) {
-  //                             setBottomSheetState(() {
-  //                               tempSelectedTransportId = transportController
-  //                                   .getTransportId(selectedTransportName);
-  //                             });
-  //                           }
-  //                         },
-  //                         selectedItem: tempSelectedTransportId != null
-  //                             ? transportController.getTransportNameById(
-  //                                 tempSelectedTransportId!,
-  //                               )
-  //                             : null,
-  //                         enabled: !transportController.isLoading.value,
-  //                         dropdownBuilder: (context, selectedItem) {
-  //                           return Container(
-  //                             alignment: Alignment.centerLeft,
-  //                             child: Text(
-  //                               selectedItem ?? 'Select Transport',
-  //                               style: TextStyle(
-  //                                 fontSize: 16,
-  //                                 color: transportController.isLoading.value
-  //                                     ? Colors.grey
-  //                                     : Colors.black,
-  //                               ),
-  //                             ),
-  //                           );
-  //                         },
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 16),
-  //                   SizedBox(
-  //                     height: 55,
-  //                     child: DropdownSearch<String>(
-  //                       popupProps: const PopupProps.menu(
-  //                         showSearchBox: true,
-  //                         showSelectedItems: true,
-  //                         searchFieldProps: TextFieldProps(
-  //                           decoration: InputDecoration(
-  //                             labelText: 'Search Month',
-  //                             border: OutlineInputBorder(),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       items: _months,
-  //                       dropdownDecoratorProps: const DropDownDecoratorProps(
-  //                         dropdownSearchDecoration: InputDecoration(
-  //                           labelText: 'Select Month',
-  //                           border: OutlineInputBorder(),
-  //                           contentPadding: EdgeInsets.symmetric(
-  //                             horizontal: 12,
-  //                           ),
-  //                           constraints: BoxConstraints.tightFor(height: 55),
-  //                         ),
-  //                         baseStyle: TextStyle(fontSize: 16),
-  //                       ),
-  //                       onChanged: (String? selectedMonth) {
-  //                         setBottomSheetState(() {
-  //                           tempSelectedMonth = selectedMonth;
-  //                         });
-  //                       },
-  //                       selectedItem: tempSelectedMonth,
-  //                       dropdownBuilder: (context, selectedItem) {
-  //                         return Container(
-  //                           alignment: Alignment.centerLeft,
-  //                           child: Text(
-  //                             selectedItem ?? 'Select Month',
-  //                             style: const TextStyle(
-  //                               fontSize: 16,
-  //                               color: Colors.black,
-  //                             ),
-  //                           ),
-  //                         );
-  //                       },
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 16),
-  //                   SizedBox(
-  //                     height: 55,
-  //                     child: DropdownSearch<String>(
-  //                       popupProps: const PopupProps.menu(
-  //                         showSearchBox: true,
-  //                         showSelectedItems: true,
-  //                         searchFieldProps: TextFieldProps(
-  //                           decoration: InputDecoration(
-  //                             labelText: 'Search Year',
-  //                             border: OutlineInputBorder(),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       items: _getYears()
-  //                           .map((year) => year.toString())
-  //                           .toList(),
-  //                       dropdownDecoratorProps: const DropDownDecoratorProps(
-  //                         dropdownSearchDecoration: InputDecoration(
-  //                           labelText: 'Select Year',
-  //                           border: OutlineInputBorder(),
-  //                           contentPadding: EdgeInsets.symmetric(
-  //                             horizontal: 12,
-  //                           ),
-  //                           constraints: BoxConstraints.tightFor(height: 55),
-  //                         ),
-  //                         baseStyle: TextStyle(fontSize: 16),
-  //                       ),
-  //                       onChanged: (String? selectedYear) {
-  //                         setBottomSheetState(() {
-  //                           tempSelectedYear = selectedYear != null
-  //                               ? int.parse(selectedYear)
-  //                               : null;
-  //                         });
-  //                       },
-  //                       selectedItem: tempSelectedYear?.toString(),
-  //                       dropdownBuilder: (context, selectedItem) {
-  //                         return Container(
-  //                           alignment: Alignment.centerLeft,
-  //                           child: Text(
-  //                             selectedItem ?? 'Select Year',
-  //                             style: const TextStyle(
-  //                               fontSize: 16,
-  //                               color: Colors.black,
-  //                             ),
-  //                           ),
-  //                         );
-  //                       },
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 16),
-  //                   Row(
-  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                     children: [
-  //                       Expanded(
-  //                         child: ElevatedButton(
-  //                           onPressed: () async {
-  //                             setBottomSheetState(() {
-  //                               tempSelectedCompanyId = null;
-  //                               tempSelectedDivisionId = null;
-  //                               tempSelectedTransportId = null;
-  //                               tempSelectedMonth = null;
-  //                               tempSelectedYear = null;
-  //                             });
-  //                             controller.fetchInwardList(
-  //                               context: context,
-  //                               reset: true,
-  //                               companyId: null,
-  //                               divisionId: null,
-  //                               transportId: null,
-  //                               month: null,
-  //                               year: null,
-  //                             );
-  //                             Navigator.pop(context);
-  //                           },
-  //                           child: const Text('Clear Filter'),
-  //                           style: ElevatedButton.styleFrom(
-  //                             backgroundColor: Colors.white,
-  //                             foregroundColor: AppColors.primary,
-  //                             shape: RoundedRectangleBorder(
-  //                               borderRadius: BorderRadius.circular(10),
-  //                               side: BorderSide(color: AppColors.primary),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       const SizedBox(width: 16),
-  //                       Expanded(
-  //                         child: ElevatedButton(
-  //                           onPressed: () {
-  //                             controller.fetchInwardList(
-  //                               context: context,
-  //                               reset: true,
-  //                               companyId: tempSelectedCompanyId,
-  //                               divisionId: tempSelectedDivisionId,
-  //                               transportId: tempSelectedTransportId,
-  //                               month: tempSelectedMonth,
-  //                               year: tempSelectedYear,
-  //                             );
-  //                             Navigator.pop(context);
-  //                           },
-  //                           child: const Text('Apply Filter'),
-  //                           style: ElevatedButton.styleFrom(
-  //                             backgroundColor: AppColors.primary,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(height: 16),
-  //                 ],
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(
-            40.0,
-          ), // Height of the bottom area
-          child: Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(
-              bottom: 16.0,
-            ), // Optional padding for better positioning
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Welcome To ICG",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.white,
-                          fontSize: 20,
-                        ),
-                        overflow: TextOverflow.ellipsis, // or TextOverflow.clip
-                        // maxLines: 2, // Allow up to 2 lines for the text
-                      ),
-                      SizedBox(width: 10),
-                      SvgPicture.asset(AppImages.navyCapIcon),
-                    ],
-                  ),
-                  Icon(Icons.power_settings_new, color: Colors.white, size: 40),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-
-      body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Medical Officer Dashboard',
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.defaultblack,
-                ),
-              ),
-              SizedBox(height: screenHeight * 0.005),
-              Text(
-                'Track Pending, Processed & Approved Appointment',
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.grey,
-                ),
-              ),
-
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 16),
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF9FAFB),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: GridView.count(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio:
-                      1.4, // Makes grid items rectangular (wider than tall)
+    return WillPopScope(
+      onWillPop: () => bottomController.onWillPop(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.primary,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(
+              40.0,
+            ), // Height of the bottom area
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(
+                bottom: 16.0,
+              ), // Optional padding for better positioning
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildCard(
-                      icon: AppImages.pendingIcon,
-                      color: const Color(0xFFFEF9C3),
-                      text: 'Total Number of Pending',
-                      tap: () {
-                        Get.toNamed(AppRoutes.appoinmentType);
-                      },
+                    Row(
+                      children: [
+                        Text(
+                          "Welcome To ICG",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.white,
+                            fontSize: 20,
+                          ),
+                          overflow:
+                              TextOverflow.ellipsis, // or TextOverflow.clip
+                          // maxLines: 2, // Allow up to 2 lines for the text
+                        ),
+                        SizedBox(width: 10),
+                        SvgPicture.asset(AppImages.navyCapIcon),
+                      ],
                     ),
-                    _buildCard(
-                      icon: AppImages.processedIcon,
-                      color: const Color(0xFFFFEDD5),
-                      text: 'Total Number of Processed',
-                      tap: () {
-                        Get.toNamed(AppRoutes.appoinmentHistory);
-                      },
-                    ),
-                    _buildCard(
-                      icon: AppImages.approvedIcon,
-                      color: AppColors.green.withOpacity(0.1),
-                      text: 'Total Number of Approved',
-                      tap: () {
-                        Get.toNamed(AppRoutes.myReportlist);
-                      },
-                    ),
-                    _buildCard(
-                      icon: AppImages.notificationIcon,
-                      color: const Color(0xFF7441CD).withOpacity(0.1),
-                      text: 'Notification',
-                      tap: () {
-                        Get.toNamed(AppRoutes.notification);
-                      },
+                    Icon(
+                      Icons.power_settings_new,
+                      color: Colors.white,
+                      size: 40,
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
-          // Column(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Container(
-          //       padding: EdgeInsets.all(8),
-          //       decoration: BoxDecoration(
-          //         color: AppColors.green.withOpacity(0.1),
-          //         borderRadius: BorderRadius.circular(10),
-          //       ),
-          //       child: ListTile(
-          //         leading: Container(
-          //           height: 50,
-          //           width: 50,
-          //           padding: EdgeInsets.all(12),
-          //           decoration: BoxDecoration(
-          //             shape: BoxShape.circle,
-          //             color: AppColors.green.withOpacity(0.3),
-          //           ),
-          //           child: SvgPicture.asset(
-          //             AppImages.calenderCheck,
-          //             height: 18,
-          //             width: 18,
-          //           ),
-          //         ),
-          //         title: Text(
-          //           'Booking Confirmed',
-          //           style: GoogleFonts.inter(
-          //             fontSize: 16,
-          //             fontWeight: FontWeight.w600,
-          //             color: AppColors.green,
-          //           ),
-          //         ),
-          //         subtitle: Text(
-          //           'Booking Confirmed',
-          //           style: GoogleFonts.inter(
-          //             fontSize: 12,
-          //             fontWeight: FontWeight.w600,
-          //             color: AppColors.green,
-          //           ),
-          //         ),
-          //         trailing: SvgPicture.asset(
-          //           AppImages.nextArrow,
-          //           // height: 18,
-          //           // width: 18,
-          //         ),
-          //       ),
-          //     ),
-          //     SizedBox(height: screenHeight * 0.02),
-          //     Text(
-          //       'Appointment Dashboard',
-          //       style: GoogleFonts.inter(
-          //         fontSize: 16,
-          //         fontWeight: FontWeight.w600,
-          //         color: AppColors.defaultblack,
-          //       ),
-          //     ),
-          //     SizedBox(height: screenHeight * 0.005),
-          //     Text(
-          //       'Manage your medical appointments',
-          //       style: GoogleFonts.inter(
-          //         fontSize: 13,
-          //         fontWeight: FontWeight.w600,
-          //         color: AppColors.grey,
-          //       ),
-          //     ),
-          //     Container(
-          //       padding: EdgeInsets.all(16),
-          //       decoration: BoxDecoration(
-          //         color: const Color(0xFFF9FAFB),
-          //         borderRadius: BorderRadius.circular(8),
-          //       ),
-          //       child: GridView.count(
-          //         physics: NeverScrollableScrollPhysics(),
-          //         shrinkWrap: true,
-          //         crossAxisCount: 2,
-
-          //         crossAxisSpacing: 16.0,
-          //         mainAxisSpacing: 16.0,
-          //         childAspectRatio:
-          //             1.4, // Makes grid items rectangular (wider than tall)
-          //         children: [
-          //           _buildCard(
-          //             icon: AppImages.calenderPlusIcon,
-          //             color: const Color(0xFFE5E7EB),
-          //             text: 'Schedule Appointment',
-          //             tap: () {
-          //               Get.toNamed(AppRoutes.appoinmentType);
-          //             },
-          //           ),
-          //           _buildCard(
-          //             icon: AppImages.myAppoinmentIcon,
-          //             color: const Color(0xFF0EA5E9).withOpacity(0.1),
-          //             text: 'My Appointment',
-          //             tap: () {
-          //               Get.toNamed(AppRoutes.appoinmentHistory);
-          //             },
-          //           ),
-          //           _buildCard(
-          //             icon: AppImages.myReportIcon,
-          //             color: AppColors.green.withOpacity(0.1),
-          //             text: 'My Report',
-          //             tap: () {
-          //               Get.toNamed(AppRoutes.myReportlist);
-          //             },
-          //           ),
-          //           _buildCard(
-          //             icon: AppImages.notificationIcon,
-          //             color: const Color(0xFF7441CD).withOpacity(0.1),
-          //             text: 'Notification',
-          //             tap: () {
-          //               Get.toNamed(AppRoutes.notification);
-          //             },
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ),
+
+        body: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Medical Officer Dashboard',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.defaultblack,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.005),
+                Text(
+                  'Track Pending, Processed & Approved Appointment',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.grey,
+                  ),
+                ),
+
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9FAFB),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: GridView.count(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+
+                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing: 16.0,
+                    childAspectRatio:
+                        1.4, // Makes grid items rectangular (wider than tall)
+                    children: [
+                      _buildCard(
+                        icon: AppImages.pendingIcon,
+                        color: const Color(0xFFFEF9C3),
+                        text: 'Total Number of Pending',
+                        tap: () {
+                          Get.toNamed(AppRoutes.pendingAppoinmentMedical);
+                        },
+                      ),
+                      _buildCard(
+                        icon: AppImages.processedIcon,
+                        color: const Color(0xFFFFEDD5),
+                        text: 'Total Number of Processed',
+                        tap: () {
+                          Get.toNamed(AppRoutes.proceessedAppoinmetMedical);
+                        },
+                      ),
+                      _buildCard(
+                        icon: AppImages.approvedIcon,
+                        color: AppColors.green.withOpacity(0.1),
+                        text: 'Total Number of Approved',
+                        tap: () {
+                          Get.toNamed(AppRoutes.approvedAppoinmentMedical);
+                        },
+                      ),
+                      _buildCard(
+                        icon: AppImages.notificationIcon,
+                        color: const Color(0xFF7441CD).withOpacity(0.1),
+                        text: 'Notification',
+                        tap: () {
+                          Get.toNamed(AppRoutes.notification);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     Container(
+            //       padding: EdgeInsets.all(8),
+            //       decoration: BoxDecoration(
+            //         color: AppColors.green.withOpacity(0.1),
+            //         borderRadius: BorderRadius.circular(10),
+            //       ),
+            //       child: ListTile(
+            //         leading: Container(
+            //           height: 50,
+            //           width: 50,
+            //           padding: EdgeInsets.all(12),
+            //           decoration: BoxDecoration(
+            //             shape: BoxShape.circle,
+            //             color: AppColors.green.withOpacity(0.3),
+            //           ),
+            //           child: SvgPicture.asset(
+            //             AppImages.calenderCheck,
+            //             height: 18,
+            //             width: 18,
+            //           ),
+            //         ),
+            //         title: Text(
+            //           'Booking Confirmed',
+            //           style: GoogleFonts.inter(
+            //             fontSize: 16,
+            //             fontWeight: FontWeight.w600,
+            //             color: AppColors.green,
+            //           ),
+            //         ),
+            //         subtitle: Text(
+            //           'Booking Confirmed',
+            //           style: GoogleFonts.inter(
+            //             fontSize: 12,
+            //             fontWeight: FontWeight.w600,
+            //             color: AppColors.green,
+            //           ),
+            //         ),
+            //         trailing: SvgPicture.asset(
+            //           AppImages.nextArrow,
+            //           // height: 18,
+            //           // width: 18,
+            //         ),
+            //       ),
+            //     ),
+            //     SizedBox(height: screenHeight * 0.02),
+            //     Text(
+            //       'Appointment Dashboard',
+            //       style: GoogleFonts.inter(
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.w600,
+            //         color: AppColors.defaultblack,
+            //       ),
+            //     ),
+            //     SizedBox(height: screenHeight * 0.005),
+            //     Text(
+            //       'Manage your medical appointments',
+            //       style: GoogleFonts.inter(
+            //         fontSize: 13,
+            //         fontWeight: FontWeight.w600,
+            //         color: AppColors.grey,
+            //       ),
+            //     ),
+            //     Container(
+            //       padding: EdgeInsets.all(16),
+            //       decoration: BoxDecoration(
+            //         color: const Color(0xFFF9FAFB),
+            //         borderRadius: BorderRadius.circular(8),
+            //       ),
+            //       child: GridView.count(
+            //         physics: NeverScrollableScrollPhysics(),
+            //         shrinkWrap: true,
+            //         crossAxisCount: 2,
+
+            //         crossAxisSpacing: 16.0,
+            //         mainAxisSpacing: 16.0,
+            //         childAspectRatio:
+            //             1.4, // Makes grid items rectangular (wider than tall)
+            //         children: [
+            //           _buildCard(
+            //             icon: AppImages.calenderPlusIcon,
+            //             color: const Color(0xFFE5E7EB),
+            //             text: 'Schedule Appointment',
+            //             tap: () {
+            //               Get.toNamed(AppRoutes.appoinmentType);
+            //             },
+            //           ),
+            //           _buildCard(
+            //             icon: AppImages.myAppoinmentIcon,
+            //             color: const Color(0xFF0EA5E9).withOpacity(0.1),
+            //             text: 'My Appointment',
+            //             tap: () {
+            //               Get.toNamed(AppRoutes.appoinmentHistory);
+            //             },
+            //           ),
+            //           _buildCard(
+            //             icon: AppImages.myReportIcon,
+            //             color: AppColors.green.withOpacity(0.1),
+            //             text: 'My Report',
+            //             tap: () {
+            //               Get.toNamed(AppRoutes.myReportlist);
+            //             },
+            //           ),
+            //           _buildCard(
+            //             icon: AppImages.notificationIcon,
+            //             color: const Color(0xFF7441CD).withOpacity(0.1),
+            //             text: 'Notification',
+            //             tap: () {
+            //               Get.toNamed(AppRoutes.notification);
+            //             },
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // ),
+          ),
+        ),
+        bottomNavigationBar: CustomBottomBar(),
       ),
-      bottomNavigationBar: CustomBottomBar(),
     );
   }
 
