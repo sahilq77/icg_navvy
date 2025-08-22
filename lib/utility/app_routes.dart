@@ -9,6 +9,7 @@ import '../view/forgot_password/enter_new_password_screen.dart';
 import '../view/forgot_password/forgot_password_screen.dart';
 import '../view/home/home_screen.dart';
 import '../view/login/login_screen.dart';
+import '../view/logout/logout_screen.dart';
 import '../view/medical_officer/approved_appoinments/approved_appoinment_screen.dart';
 import '../view/medical_officer/pending_appoinments/pending_appoinment_medical_screen.dart';
 import '../view/medical_officer/processed_appoinments/proceessed_appoinmet_medical_screen.dart';
@@ -21,7 +22,7 @@ import '../view/schedule_appoinment_ame/schedule_appoinment_ame_review_screen.da
 import '../view/schedule_appoinment_ame/schedule_appoinment_ame_screen.dart';
 import '../view/splash/splash_screen.dart';
 
-import '../view/welcome/welcome_screen.dart';
+import '../view/welcome/welcome_screen.dart' hide LoginScreen;
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -51,7 +52,7 @@ class AppRoutes {
   static const String proceessedAppoinmetAuth = '/proceessed-appoinmet-auth';
   static const String approvedAppoinmentAuth = '/approved-appoinmet-auth';
 
-  static const String receiptform = '/receipt_form';
+  static const String logout = '/log-out';
   static const String packedbyoutward = '/packedby_outward';
   static const String packedbyoutwarddetail = '/packedby_outward_detail';
   static const String stockmovement = '/stock_movement';
@@ -176,5 +177,11 @@ class AppRoutes {
       page: () => AprrovedAppoinmentAuthScreen(),
       transition: Transition.fadeIn,
     ),
+ GetPage(
+      name: logout,
+      page: () => LogoutScreen(),
+      transition: Transition.fadeIn,
+    ),
+    
   ];
 }

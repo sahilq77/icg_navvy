@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:icg_navy/utility/app_utility.dart';
 
 import '../../controller/bottomnavigation/bottom_navigation_controller.dart';
 import '../../utility/app_colors.dart';
 import '../../utility/app_images.dart';
 
-class CustomBottomBar extends StatelessWidget {
+class CustomBottomBar extends StatefulWidget {
   const CustomBottomBar({super.key});
 
+  @override
+  State<CustomBottomBar> createState() => _CustomBottomBarState();
+}
+
+class _CustomBottomBarState extends State<CustomBottomBar> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BottomNavigationController());
@@ -26,36 +32,74 @@ class CustomBottomBar extends StatelessWidget {
         ],
       ),
       child: Obx(
-        () => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(
-              index: 0,
-              assetPath: AppImages.homeIcon,
-              label: 'Home',
-              controller: controller,
-            ),
-            _buildNavItem(
-              index: 1,
-              assetPath: AppImages.crownIcon,
-              label: 'AME/PME',
-              controller: controller,
-            ),
-            _buildNavItem(
-              index: 2,
-              assetPath: AppImages.leadsIcon,
-              label: 'OPD',
-              controller: controller,
-            ),
-            _buildNavItem(
-              index: 3,
-              assetPath: AppImages.videoIcon,
-              label: 'Report',
-              controller: controller,
-            ),
-          ],
-        ),
+        () => AppUtility.userType == "0"
+            ? _indivisualUser(controller)
+            : _officer(controller),
       ),
+    );
+  }
+
+  Row _indivisualUser(BottomNavigationController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _buildNavItem(
+          index: 0,
+          assetPath: AppImages.homeIcon,
+          label: 'Home',
+          controller: controller,
+        ),
+        _buildNavItem(
+          index: 1,
+          assetPath: AppImages.crownIcon,
+          label: 'AME/PME',
+          controller: controller,
+        ),
+        _buildNavItem(
+          index: 2,
+          assetPath: AppImages.leadsIcon,
+          label: 'OPD',
+          controller: controller,
+        ),
+        _buildNavItem(
+          index: 3,
+          assetPath: AppImages.videoIcon,
+          label: 'Report',
+          controller: controller,
+        ),
+      ],
+    );
+  }
+
+  Row _officer(BottomNavigationController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _buildNavItem(
+          index: 0,
+          assetPath: AppImages.homeIcon,
+          label: 'Home',
+          controller: controller,
+        ),
+        _buildNavItem(
+          index: 1,
+          assetPath: AppImages.myAppoinmnetIcon,
+          label: 'My Appointments',
+          controller: controller,
+        ),
+        _buildNavItem(
+          index: 2,
+          assetPath: AppImages.bellGreyIcon,
+          label: 'Notification',
+          controller: controller,
+        ),
+        _buildNavItem(
+          index: 3,
+          assetPath: AppImages.switchGrey,
+          label: 'logout',
+          controller: controller,
+        ),
+      ],
     );
   }
 

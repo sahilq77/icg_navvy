@@ -8,6 +8,7 @@ class AppImages {
   static const String welcome1 = "assets/images/ship1.png";
   static const String welcome2 = "assets/images/ship2.png";
   static const String welcome3 = "assets/images/ship3.png";
+  static const String shipGrey = "assets/images/shipgrey.png";
 
   //category images/icons
   static const String calenderCheck = "assets/icons/calender_check.svg";

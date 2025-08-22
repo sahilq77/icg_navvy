@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:icg_navy/utility/app_images.dart';
+import 'package:icg_navy/utility/app_routes.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -7,7 +11,8 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  final PageController _pageController = PageController(initialPage: 0);
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
   int _currentPage = 0;
 
   final List<Map<String, String>> _slides = [
@@ -38,16 +43,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image at bottom
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
-            },
+          // Carousel Slider for slides
+          CarouselSlider.builder(
+            carouselController: _carouselController,
             itemCount: _slides.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (context, index, realIndex) {
               return Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: screenWidth * 0.15,
@@ -67,14 +67,24 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     SizedBox(height: screenHeight * 0.01),
                     Text(
                       _slides[index]["description"]!,
-
                       style: TextStyle(fontSize: 16),
                     ),
                   ],
                 ),
               );
             },
+            options: CarouselOptions(
+              height: screenHeight,
+              viewportFraction: 1.0,
+              enableInfiniteScroll: false,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+            ),
           ),
+          // Background Image at bottom
           Positioned(
             bottom: 0,
             left: 0,
@@ -84,55 +94,93 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               fit: BoxFit.fitWidth,
             ),
           ),
-          // PageView for slides
-
-          // Navigation indicators
+          // Bottom row with Skip, Indicators, and Next/Done buttons
           Positioned(
-            bottom: 100,
+            bottom: 20,
             left: 0,
             right: 0,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                _slides.length,
-                (index) => Container(
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentPage == index ? Colors.blue : Colors.grey,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Skip button
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: TextButton(
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.login);
+                    },
+                    child: Text(
+                      "Skip",
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          // Skip and Next buttons
-          Positioned(
-            bottom: 20,
-            left: 20,
-            child: TextButton(
-              onPressed: () {
-                // Handle skip
-              },
-              child: Text("Skip"),
-            ),
-          ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: TextButton(
-              onPressed: () {
-                if (_currentPage < _slides.length - 1) {
-                  _pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeIn,
-                  );
-                } else {
-                  // Handle completion
-                }
-              },
-              child: Text(_currentPage == _slides.length - 1 ? "Done" : "Next"),
+                // Slide indicators
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    _slides.length,
+                    (index) => GestureDetector(
+                      onTap: () {
+                        _carouselController.animateToPage(index);
+                        setState(() {
+                          _currentPage = index;
+                        });
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4),
+                        width: 20, // Wider for oval shape
+                        height: 8, // Shorter for oval shape
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(
+                              4,
+                            ), // Makes it oval
+                            color: _currentPage == index
+                                ? Colors.white
+                                : Colors.white.withOpacity(0.3),
+                            // border: Border.all(
+                            //   color: _currentPage == index
+                            //       ? Colors.white
+                            //       : Colors.grey,
+                            //   width: 1,
+                            // ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // Next/Done button
+                Padding(
+                  padding: EdgeInsets.only(right: 20),
+                  child: TextButton(
+                    onPressed: () {
+                      if (_currentPage < _slides.length - 1) {
+                        _carouselController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeIn,
+                        );
+                      } else {
+                        Get.toNamed(AppRoutes.login);
+                      }
+                    },
+                    child: Text(
+                      _currentPage == _slides.length - 1 ? "Done" : "Next",
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

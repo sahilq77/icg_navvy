@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:icg_navy/controller/medical_officer/pending_appoinments_medical/pending_appoinments_medical_controller.dart';
 import '../../../controller/appoinment_history/appoinment_history_controller.dart';
+import '../../../controller/bottomnavigation/bottom_navigation_controller.dart';
 import '../../../controller/my_report/my_report_controlller.dart';
 import '../../../utility/app_colors.dart';
 import '../../../utility/app_images.dart';
@@ -283,84 +284,88 @@ class _PendingAppoinmentMedicalScreenState
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        centerTitle: false,
-        title: Text(
-          'Pending Appoinment',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.w600,
-            color: AppColors.defaultblack,
-            fontSize: 18,
-          ),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              _showFilterBottomSheet(context);
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Color(0xFFFFFFFF),
-                border: Border.all(color: Color(0xFFDADADA), width: 1.0),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Filter',
-                    style: GoogleFonts.inter(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(width: screenWidth * 0.03),
-                  Icon(
-                    Icons.filter_alt_outlined,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                ],
-              ),
+    final bottomController = Get.put(BottomNavigationController());
+    return WillPopScope(
+      onWillPop: () => bottomController.onWillPop(),
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: AppColors.background,
+          elevation: 0,
+          centerTitle: false,
+          title: Text(
+            'Pending Appoinment',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontWeight: FontWeight.w600,
+              color: AppColors.defaultblack,
+              fontSize: 18,
             ),
           ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(10),
-          child: Divider(color: const Color(0xFFDADADA), height: 0),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Obx(
-          () => ListView.builder(
-            itemCount: controller.appointments.length,
-            itemBuilder: (context, index) {
-              final appointment = controller.appointments[index];
-              return AppointmentCard(
-                name: appointment.name,
-                relation: appointment.relation,
-                age: appointment.age,
-                gender: appointment.gender,
-                status: appointment.status,
-                type: appointment.type,
-                hospital: appointment.hospital,
-                department: appointment.department,
-                date: appointment.date,
-              );
-            },
+          actions: [
+            GestureDetector(
+              onTap: () {
+                _showFilterBottomSheet(context);
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Color(0xFFFFFFFF),
+                  border: Border.all(color: Color(0xFFDADADA), width: 1.0),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Filter',
+                      style: GoogleFonts.inter(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(width: screenWidth * 0.03),
+                    Icon(
+                      Icons.filter_alt_outlined,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(10),
+            child: Divider(color: const Color(0xFFDADADA), height: 0),
           ),
         ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Obx(
+            () => ListView.builder(
+              itemCount: controller.appointments.length,
+              itemBuilder: (context, index) {
+                final appointment = controller.appointments[index];
+                return AppointmentCard(
+                  name: appointment.name,
+                  relation: appointment.relation,
+                  age: appointment.age,
+                  gender: appointment.gender,
+                  status: appointment.status,
+                  type: appointment.type,
+                  hospital: appointment.hospital,
+                  department: appointment.department,
+                  date: appointment.date,
+                );
+              },
+            ),
+          ),
+        ),
+        bottomNavigationBar: CustomBottomBar(),
       ),
-      //bottomNavigationBar: CustomBottomBar(),
     );
   }
 }

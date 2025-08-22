@@ -738,45 +738,83 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
                           final token =
                               controller.appointmentDetails.value.tokens[index];
                           return Obx(
-                            () => ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: token.available
-                                    ? (controller.selectedTokenIndex.value ==
-                                              index
-                                          ? AppColors
-                                                .primary // Selected token color
-                                          : Colors.green)
-                                    : Colors.red, // Unavailable token color
-                                padding: EdgeInsets.all(8),
-                                side:
-                                    controller.selectedTokenIndex.value == index
-                                    ? BorderSide(color: Colors.white, width: 2)
-                                    : null, // Border for selected token
-                              ),
-                              onPressed: token.available
+                            () => InkWell(
+                              onTap: token.available
                                   ? () => controller.selectToken(index)
                                   : null,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Token ${token.number}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                    ),
-                                    textAlign: TextAlign.center,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: token.available
+                                      ? (controller.selectedTokenIndex.value ==
+                                                index
+                                            ? AppColors.primary.withOpacity(
+                                                0.3,
+                                              ) // Selected token color
+                                            : Colors.green.withOpacity(0.3))
+                                      : const Color(
+                                          0xFFFFEFEF,
+                                        ), // Unavailable token color
+                                  border: Border.all(
+                                    color: token.available
+                                        ? (controller
+                                                      .selectedTokenIndex
+                                                      .value ==
+                                                  index
+                                              ? AppColors
+                                                    .primary // Selected token color
+                                              : Colors.green)
+                                        : Colors.red, //
+                                    width:
+                                        controller.selectedTokenIndex.value ==
+                                            index
+                                        ? 2
+                                        : 1,
                                   ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    token.time,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    10,
+                                  ), // Optional: for rounded corners
+                                ),
+                                padding: EdgeInsets.all(8),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Token ${token.number}',
+                                      style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: token.available
+                                            ? (controller
+                                                          .selectedTokenIndex
+                                                          .value ==
+                                                      index
+                                                  ? AppColors
+                                                        .primary // Selected token color
+                                                  : Colors.green)
+                                            : Colors.red, //
+                                      ),
+                                      textAlign: TextAlign.center,
                                     ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
+                                    SizedBox(height: 4),
+                                    Text(
+                                      token.time,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: token.available
+                                            ? (controller
+                                                          .selectedTokenIndex
+                                                          .value ==
+                                                      index
+                                                  ? AppColors
+                                                        .primary // Selected token color
+                                                  : Colors.green)
+                                            : Colors.red, //
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

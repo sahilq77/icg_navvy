@@ -116,7 +116,7 @@ class SplashController extends GetxController {
     if (AppUtility.isLoggedIn) {
       Get.offNamed(AppRoutes.home);
     } else {
-      Get.offNamed(AppRoutes.login);
+      Get.offNamed(AppRoutes.welcome);
     }
   }
 

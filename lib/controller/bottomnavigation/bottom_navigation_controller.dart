@@ -1,31 +1,63 @@
 import 'package:get/get.dart';
+import 'package:icg_navy/utility/app_utility.dart';
 
 import '../../utility/app_routes.dart';
 
 class BottomNavigationController extends GetxController {
   RxInt selectedIndex = 0.obs;
 
-  // final List<String> routes = [
-  //   AppRoutes.home,
-  //   AppRoutes.scheduleAppinmentAME,
-  //   AppRoutes.scheduleAppinment,
-  //   AppRoutes.myReportlist,
-  // ];
-  final List<String> routes = [
-    AppRoutes.home,
-    AppRoutes.pendingAppoinmentMedical,
-    AppRoutes.notification,
-    AppRoutes.myReportlist,
-  ];
+  // Single declaration of routes, initialized based on userType
+  late final List<String> routes;
+
   @override
   void onInit() {
     super.onInit();
+    // Initialize routes based on userType
+    routes = _getRoutesForUserType(AppUtility.userType);
+    // Sync initial index with current route
     syncIndexWithRoute(Get.currentRoute);
+    // Listen for route changes
     ever(Rx<String?>(Get.routing.current), (route) {
       if (route != null) {
         syncIndexWithRoute(route);
       }
     });
+  }
+
+  // Determine routes based on userType
+  List<String> _getRoutesForUserType(String? userType) {
+    switch (userType) {
+      case "0":
+        return [
+          AppRoutes.home,
+          AppRoutes.scheduleAppinmentAME,
+          AppRoutes.scheduleAppinment,
+          AppRoutes.myReportlist,
+        ];
+      case "1":
+        return [
+          AppRoutes.home,
+          AppRoutes.pendingAppoinmentMedical,
+          AppRoutes.notification,
+          AppRoutes.logout,
+        ];
+      case "2":
+        return [
+          AppRoutes.home,
+          AppRoutes.pendingAppoinmentAuth,
+          AppRoutes.notification,
+          AppRoutes.logout,
+        ];
+      default:
+        // Fallback routes in case userType is invalid
+        print('Invalid userType: $userType, defaulting to userType 0 routes');
+        return [
+          AppRoutes.home,
+          AppRoutes.scheduleAppinmentAME,
+          AppRoutes.scheduleAppinment,
+          AppRoutes.myReportlist,
+        ];
+    }
   }
 
   void syncIndexWithRoute(String? route) {
@@ -36,6 +68,10 @@ class BottomNavigationController extends GetxController {
     final index = routes.indexOf(route);
     if (index != -1) {
       selectedIndex.value = index;
+    } else {
+      print(
+        'Route $route not found in routes, keeping current index: ${selectedIndex.value}',
+      );
     }
   }
 

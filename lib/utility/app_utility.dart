@@ -39,14 +39,14 @@ class AppUtility {
     //   String profile,
     String userid,
     bool adminStatus,
-    List<String> userPrivileges,
+   // List<String> userPrivileges,
   ) async {
-    final privilegesToSave = userPrivileges.isEmpty
-        ? ['dashboard']
-        : userPrivileges;
-    if (userPrivileges.isEmpty) {
-      log('No privileges provided, setting default privilege: [dashboard]');
-    }
+    // final privilegesToSave = userPrivileges.isEmpty
+    //     ? ['dashboard']
+    //     : userPrivileges;
+    // if (userPrivileges.isEmpty) {
+    //   log('No privileges provided, setting default privilege: [dashboard]');
+    // }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', true);
     await prefs.setString('full_name', name);
@@ -54,13 +54,13 @@ class AppUtility {
     await prefs.setString('user_type', usertype);
     await prefs.setString('login_user_id', userid);
     await prefs.setBool('is_admin', adminStatus);
-    await prefs.setString('privileges', jsonEncode(privilegesToSave));
+    //await prefs.setString('privileges', jsonEncode(privilegesToSave));
     fullName = name;
     mobileNumber = mobile;
     userID = userid;
     userType = usertype;
     isAdmin = adminStatus;
-    privileges = privilegesToSave;
+   // privileges = privilegesToSave;
     // profileImage = profile;
     userID = userid;
     // AppUtility.u = userId;

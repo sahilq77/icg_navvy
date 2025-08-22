@@ -51,6 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    AppUtility.initialize();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -58,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onWillPop: () => bottomController.onWillPop(),
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: AppColors.primary,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(
@@ -91,10 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         SvgPicture.asset(AppImages.navyCapIcon),
                       ],
                     ),
-                    Icon(
-                      Icons.power_settings_new,
-                      color: Colors.white,
-                      size: 40,
+                    GestureDetector(
+                      onTap: () => Get.toNamed(AppRoutes.logout),
+                      child: Icon(
+                        Icons.power_settings_new,
+                        color: Colors.white,
+                        size: 40,
+                      ),
                     ),
                   ],
                 ),
@@ -107,129 +118,136 @@ class _HomeScreenState extends State<HomeScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: _approvingAuthInterface(screenHeight),
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Container(
-            //       padding: EdgeInsets.all(8),
-            //       decoration: BoxDecoration(
-            //         color: AppColors.green.withOpacity(0.1),
-            //         borderRadius: BorderRadius.circular(10),
-            //       ),
-            //       child: ListTile(
-            //         leading: Container(
-            //           height: 50,
-            //           width: 50,
-            //           padding: EdgeInsets.all(12),
-            //           decoration: BoxDecoration(
-            //             shape: BoxShape.circle,
-            //             color: AppColors.green.withOpacity(0.3),
-            //           ),
-            //           child: SvgPicture.asset(
-            //             AppImages.calenderCheck,
-            //             height: 18,
-            //             width: 18,
-            //           ),
-            //         ),
-            //         title: Text(
-            //           'Booking Confirmed',
-            //           style: GoogleFonts.inter(
-            //             fontSize: 16,
-            //             fontWeight: FontWeight.w600,
-            //             color: AppColors.green,
-            //           ),
-            //         ),
-            //         subtitle: Text(
-            //           'Booking Confirmed',
-            //           style: GoogleFonts.inter(
-            //             fontSize: 12,
-            //             fontWeight: FontWeight.w600,
-            //             color: AppColors.green,
-            //           ),
-            //         ),
-            //         trailing: SvgPicture.asset(
-            //           AppImages.nextArrow,
-            //           // height: 18,
-            //           // width: 18,
-            //         ),
-            //       ),
-            //     ),
-            //     SizedBox(height: screenHeight * 0.02),
-            //     Text(
-            //       'Appointment Dashboard',
-            //       style: GoogleFonts.inter(
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.w600,
-            //         color: AppColors.defaultblack,
-            //       ),
-            //     ),
-            //     SizedBox(height: screenHeight * 0.005),
-            //     Text(
-            //       'Manage your medical appointments',
-            //       style: GoogleFonts.inter(
-            //         fontSize: 13,
-            //         fontWeight: FontWeight.w600,
-            //         color: AppColors.grey,
-            //       ),
-            //     ),
-            //     Container(
-            //       padding: EdgeInsets.all(16),
-            //       decoration: BoxDecoration(
-            //         color: const Color(0xFFF9FAFB),
-            //         borderRadius: BorderRadius.circular(8),
-            //       ),
-            //       child: GridView.count(
-            //         physics: NeverScrollableScrollPhysics(),
-            //         shrinkWrap: true,
-            //         crossAxisCount: 2,
-
-            //         crossAxisSpacing: 10.0,
-            // mainAxisSpacing: 10.0,
-            //         childAspectRatio:
-            //             1.4, // Makes grid items rectangular (wider than tall)
-            //         children: [
-            //           _buildCard(
-            //             icon: AppImages.calenderPlusIcon,
-            //             color: const Color(0xFFE5E7EB),
-            //             text: 'Schedule Appointment',
-            //             tap: () {
-            //               Get.toNamed(AppRoutes.appoinmentType);
-            //             },
-            //           ),
-            //           _buildCard(
-            //             icon: AppImages.myAppoinmentIcon,
-            //             color: const Color(0xFF0EA5E9).withOpacity(0.1),
-            //             text: 'My Appointment',
-            //             tap: () {
-            //               Get.toNamed(AppRoutes.appoinmentHistory);
-            //             },
-            //           ),
-            //           _buildCard(
-            //             icon: AppImages.myReportIcon,
-            //             color: AppColors.green.withOpacity(0.1),
-            //             text: 'My Report',
-            //             tap: () {
-            //               Get.toNamed(AppRoutes.myReportlist);
-            //             },
-            //           ),
-            //           _buildCard(
-            //             icon: AppImages.notificationIcon,
-            //             color: const Color(0xFF7441CD).withOpacity(0.1),
-            //             text: 'Notification',
-            //             tap: () {
-            //               Get.toNamed(AppRoutes.notification);
-            //             },
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
+            child: AppUtility.userType == "0"
+                ? _indivialUser(screenHeight)
+                : AppUtility.userType == "1"
+                ? _medicalnterface(screenHeight)
+                : _approvingAuthInterface(screenHeight),
           ),
         ),
         bottomNavigationBar: CustomBottomBar(),
       ),
+    );
+  }
+
+  Column _indivialUser(double screenHeight) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.green.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: ListTile(
+            leading: Container(
+              height: 50,
+              width: 50,
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.green.withOpacity(0.3),
+              ),
+              child: SvgPicture.asset(
+                AppImages.calenderCheck,
+                height: 18,
+                width: 18,
+              ),
+            ),
+            title: Text(
+              'Booking Confirmed',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.green,
+              ),
+            ),
+            subtitle: Text(
+              'Booking Confirmed',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.green,
+              ),
+            ),
+            trailing: SvgPicture.asset(
+              AppImages.nextArrow,
+              // height: 18,
+              // width: 18,
+            ),
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.02),
+        Text(
+          'Appointment Dashboard',
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.defaultblack,
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.005),
+        Text(
+          'Manage your medical appointments',
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: AppColors.grey,
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF9FAFB),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: GridView.count(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 2,
+
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+            childAspectRatio:
+                1.4, // Makes grid items rectangular (wider than tall)
+            children: [
+              _buildCard(
+                icon: AppImages.calenderPlusIcon,
+                color: const Color(0xFFE5E7EB),
+                text: 'Schedule Appointment',
+                tap: () {
+                  Get.toNamed(AppRoutes.appoinmentType);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.myAppoinmentIcon,
+                color: const Color(0xFF0EA5E9).withOpacity(0.1),
+                text: 'My Appointment',
+                tap: () {
+                  Get.toNamed(AppRoutes.appoinmentHistory);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.myReportIcon,
+                color: AppColors.green.withOpacity(0.1),
+                text: 'My Report',
+                tap: () {
+                  Get.toNamed(AppRoutes.myReportlist);
+                },
+              ),
+              _buildCard(
+                icon: AppImages.notificationIcon,
+                color: const Color(0xFF7441CD).withOpacity(0.1),
+                text: 'Notification',
+                tap: () {
+                  Get.toNamed(AppRoutes.notification);
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
