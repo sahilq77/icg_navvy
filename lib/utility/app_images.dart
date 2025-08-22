@@ -12,6 +12,7 @@ class AppImages {
   //category images/icons
   static const String calenderCheck = "assets/icons/calender_check.svg";
   static const String nextArrow = "assets/icons/next_arrow.svg";
+  static const String navyCapIcon = "assets/icons/navy-cap-icon.svg";
 
   static const String calenderPlusIcon = "assets/icons/calender_plus.svg";
   static const String myReportIcon = "assets/icons/myreport.svg";
@@ -22,6 +23,11 @@ class AppImages {
   static const String profile = "assets/profile.png";
   static const String nodata = "assets/images/nodata.png";
   static const String thankyou = "assets/icons/Group_2.svg";
+
+  //dashboard Icons (Medical officer interface)
+  static const String pendingIcon = "assets/icons/pending-icon.svg";
+  static const String processedIcon = "assets/icons/processed-icon.svg";
+  static const String approvedIcon = "assets/icons/approved-icon.svg";
 
   //Schedule appoinment form IcONS
   static const String personIcon = "assets/icons/PersonIcon.svg";
@@ -49,7 +55,7 @@ class AppImages {
   static const String doctorgreyIcon = "assets/icons/doctor-grey-icon.svg";
   static const String calendergreyIcon = "assets/icons/calender-grey-icon.svg";
 
-  //bottom navigation icons
+  //bottom navigation icons  (indivisual interface)
   static const String homeIcon = "assets/icons/home-icon.svg";
   static const String crownIcon = "assets/icons/bag-icon.svg";
   static const String leadsIcon = "assets/icons/hospital-grey-icon.svg";

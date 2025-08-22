@@ -450,28 +450,34 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: AppColors.primary,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(
-            30.0,
+            40.0,
           ), // Height of the bottom area
           child: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.only(
-              bottom: 8.0,
+              bottom: 16.0,
             ), // Optional padding for better positioning
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Welcome To ICG  🧢",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.white,
-                      fontSize: 20,
-                    ),
-                    overflow: TextOverflow.ellipsis, // or TextOverflow.clip
-                    // maxLines: 2, // Allow up to 2 lines for the text
+                  Row(
+                    children: [
+                      Text(
+                        "Welcome To ICG",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.white,
+                          fontSize: 20,
+                        ),
+                        overflow: TextOverflow.ellipsis, // or TextOverflow.clip
+                        // maxLines: 2, // Allow up to 2 lines for the text
+                      ),
+                      SizedBox(width: 10),
+                      SvgPicture.asset(AppImages.navyCapIcon),
+                    ],
                   ),
                   Icon(Icons.power_settings_new, color: Colors.white, size: 40),
                 ],
@@ -488,69 +494,26 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.green.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ListTile(
-                  leading: Container(
-                    height: 50,
-                    width: 50,
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.green.withOpacity(0.3),
-                    ),
-                    child: SvgPicture.asset(
-                      AppImages.calenderCheck,
-                      height: 18,
-                      width: 18,
-                    ),
-                  ),
-                  title: Text(
-                    'Booking Confirmed',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.green,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'Booking Confirmed',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.green,
-                    ),
-                  ),
-                  trailing: SvgPicture.asset(
-                    AppImages.nextArrow,
-                    // height: 18,
-                    // width: 18,
-                  ),
-                ),
-              ),
-              SizedBox(height: screenHeight * 0.02),
               Text(
-                'Appointment Dashboard',
+                'Medical Officer Dashboard',
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppColors.defaultblack,
                 ),
               ),
-              SizedBox(height: screenHeight * 0.01),
+              SizedBox(height: screenHeight * 0.005),
               Text(
-                'Manage your medical appointments',
+                'Track Pending, Processed & Approved Appointment',
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: AppColors.grey,
                 ),
               ),
+
               Container(
+                margin: EdgeInsets.symmetric(vertical: 16),
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF9FAFB),
@@ -567,25 +530,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       1.4, // Makes grid items rectangular (wider than tall)
                   children: [
                     _buildCard(
-                      icon: AppImages.calenderPlusIcon,
-                      color: const Color(0xFFE5E7EB),
-                      text: 'Schedule Appointment',
+                      icon: AppImages.pendingIcon,
+                      color: const Color(0xFFFEF9C3),
+                      text: 'Total Number of Pending',
                       tap: () {
                         Get.toNamed(AppRoutes.appoinmentType);
                       },
                     ),
                     _buildCard(
-                      icon: AppImages.myAppoinmentIcon,
-                      color: const Color(0xFF0EA5E9).withOpacity(0.1),
-                      text: 'My Appointment',
+                      icon: AppImages.processedIcon,
+                      color: const Color(0xFFFFEDD5),
+                      text: 'Total Number of Processed',
                       tap: () {
                         Get.toNamed(AppRoutes.appoinmentHistory);
                       },
                     ),
                     _buildCard(
-                      icon: AppImages.myReportIcon,
+                      icon: AppImages.approvedIcon,
                       color: AppColors.green.withOpacity(0.1),
-                      text: 'My Report',
+                      text: 'Total Number of Approved',
                       tap: () {
                         Get.toNamed(AppRoutes.myReportlist);
                       },
@@ -603,6 +566,124 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
+          // Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     Container(
+          //       padding: EdgeInsets.all(8),
+          //       decoration: BoxDecoration(
+          //         color: AppColors.green.withOpacity(0.1),
+          //         borderRadius: BorderRadius.circular(10),
+          //       ),
+          //       child: ListTile(
+          //         leading: Container(
+          //           height: 50,
+          //           width: 50,
+          //           padding: EdgeInsets.all(12),
+          //           decoration: BoxDecoration(
+          //             shape: BoxShape.circle,
+          //             color: AppColors.green.withOpacity(0.3),
+          //           ),
+          //           child: SvgPicture.asset(
+          //             AppImages.calenderCheck,
+          //             height: 18,
+          //             width: 18,
+          //           ),
+          //         ),
+          //         title: Text(
+          //           'Booking Confirmed',
+          //           style: GoogleFonts.inter(
+          //             fontSize: 16,
+          //             fontWeight: FontWeight.w600,
+          //             color: AppColors.green,
+          //           ),
+          //         ),
+          //         subtitle: Text(
+          //           'Booking Confirmed',
+          //           style: GoogleFonts.inter(
+          //             fontSize: 12,
+          //             fontWeight: FontWeight.w600,
+          //             color: AppColors.green,
+          //           ),
+          //         ),
+          //         trailing: SvgPicture.asset(
+          //           AppImages.nextArrow,
+          //           // height: 18,
+          //           // width: 18,
+          //         ),
+          //       ),
+          //     ),
+          //     SizedBox(height: screenHeight * 0.02),
+          //     Text(
+          //       'Appointment Dashboard',
+          //       style: GoogleFonts.inter(
+          //         fontSize: 16,
+          //         fontWeight: FontWeight.w600,
+          //         color: AppColors.defaultblack,
+          //       ),
+          //     ),
+          //     SizedBox(height: screenHeight * 0.005),
+          //     Text(
+          //       'Manage your medical appointments',
+          //       style: GoogleFonts.inter(
+          //         fontSize: 13,
+          //         fontWeight: FontWeight.w600,
+          //         color: AppColors.grey,
+          //       ),
+          //     ),
+          //     Container(
+          //       padding: EdgeInsets.all(16),
+          //       decoration: BoxDecoration(
+          //         color: const Color(0xFFF9FAFB),
+          //         borderRadius: BorderRadius.circular(8),
+          //       ),
+          //       child: GridView.count(
+          //         physics: NeverScrollableScrollPhysics(),
+          //         shrinkWrap: true,
+          //         crossAxisCount: 2,
+
+          //         crossAxisSpacing: 16.0,
+          //         mainAxisSpacing: 16.0,
+          //         childAspectRatio:
+          //             1.4, // Makes grid items rectangular (wider than tall)
+          //         children: [
+          //           _buildCard(
+          //             icon: AppImages.calenderPlusIcon,
+          //             color: const Color(0xFFE5E7EB),
+          //             text: 'Schedule Appointment',
+          //             tap: () {
+          //               Get.toNamed(AppRoutes.appoinmentType);
+          //             },
+          //           ),
+          //           _buildCard(
+          //             icon: AppImages.myAppoinmentIcon,
+          //             color: const Color(0xFF0EA5E9).withOpacity(0.1),
+          //             text: 'My Appointment',
+          //             tap: () {
+          //               Get.toNamed(AppRoutes.appoinmentHistory);
+          //             },
+          //           ),
+          //           _buildCard(
+          //             icon: AppImages.myReportIcon,
+          //             color: AppColors.green.withOpacity(0.1),
+          //             text: 'My Report',
+          //             tap: () {
+          //               Get.toNamed(AppRoutes.myReportlist);
+          //             },
+          //           ),
+          //           _buildCard(
+          //             icon: AppImages.notificationIcon,
+          //             color: const Color(0xFF7441CD).withOpacity(0.1),
+          //             text: 'Notification',
+          //             tap: () {
+          //               Get.toNamed(AppRoutes.notification);
+          //             },
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ),
       ),
       bottomNavigationBar: CustomBottomBar(),
@@ -638,7 +719,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: AppColors.defaultblack,
                 ),
                 overflow: TextOverflow.ellipsis, // or TextOverflow.clip
-                // maxLines: 2, // Allow up to 2 lines for the text
+                maxLines: 2, // Allow up to 2 lines for the text
               ),
             ],
           ),

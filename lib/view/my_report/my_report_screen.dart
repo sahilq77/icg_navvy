@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import '../../controller/appoinment_history/appoinment_history_controller.dart';
+import '../../controller/my_report/my_report_controlller.dart';
 import '../../utility/app_colors.dart';
 import '../../utility/app_images.dart';
 import '../bottomnavigation/bottomnavigation.dart' show CustomBottomBar;
@@ -14,9 +15,7 @@ class MyReportScreen extends StatefulWidget {
 }
 
 class _MyReportScreenState extends State<MyReportScreen> {
-  final AppoinmentHistoryController controller = Get.put(
-    AppoinmentHistoryController(),
-  );
+  final MyReportControlller controller = Get.put(MyReportControlller());
 
   void _showFilterBottomSheet(BuildContext context) {
     DateTime? fromDate = DateTime(2025, 8, 22);
@@ -356,7 +355,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
           ),
         ),
       ),
-       bottomNavigationBar: CustomBottomBar(),
+      bottomNavigationBar: CustomBottomBar(),
     );
   }
 }
