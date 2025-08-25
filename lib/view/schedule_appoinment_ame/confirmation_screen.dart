@@ -170,7 +170,7 @@ class ConfirmationScreen extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 OutlinedButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () => Get.offNamed(AppRoutes.home),
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(

@@ -123,8 +123,8 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
           children: [
             SvgPicture.asset(
               assetPath,
-              width: 20.0,
-              height: 20.0,
+              width: 25.0,
+              height: 25.0,
               color: iconColor,
               colorBlendMode: BlendMode.srcIn,
               errorBuilder: (context, error, stackTrace) =>

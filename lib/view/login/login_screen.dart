@@ -20,6 +20,33 @@ class _LoginScreenState extends State<LoginScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  static const Map<String, String> _emailToRole = {
+    'appointment@gmail.com': '0',
+    'medicalofficer@gmail.com': '1',
+    'authofficer@gmail.com': '2',
+  };
+
+  Future<void> handleLogin() async {
+    final email = _phoneController.text;
+    if (_emailToRole.containsKey(email)) {
+      await AppUtility.setUserInfo(
+        "name",
+        "mobile",
+        _emailToRole[email]!,
+        "userid",
+        true,
+      );
+      Get.snackbar(
+        'Success',
+        'Login Successfully!',
+        backgroundColor: AppColors.success,
+        colorText: Colors.white,
+      );
+      Get.offNamed(AppRoutes.home);
+    }
+    _phoneController.clear();
+    _passwordController.clear();
+  }
 
   @override
   void dispose() {
@@ -186,41 +213,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
 
                       ElevatedButton(
-                        onPressed: () async{
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // controller.login(
-                            //   context: context,
-                            //   mobile: _phoneController.text.toString(),
-                            //   password: _passwordController.text.toString(),
-                            // );
-                            // AppUtility.setUserInfo(
-                            //   "name",
-                            //   "mobile",
-                            //   _phoneController.text.toString(),
-                            //   "userid",
-                            //   true,
-                            // );
-
-                            if (_phoneController.text == "0" ||
-                                _phoneController.text == "1" ||
-                                _phoneController.text == "2") {
-                           await   AppUtility.setUserInfo(
-                                "name",
-                                "mobile",
-                                _phoneController.text.toString(),
-                                "userid",
-                                true,
-                              );
-                              Get.snackbar(
-                                'Success',
-                                'Login Successfully!',
-                                backgroundColor: AppColors.success,
-                                colorText: Colors.white,
-                              );
-                              Get.offNamed(AppRoutes.home);
-                            }
-                            _phoneController.clear();
-                            _passwordController.clear();
+                            handleLogin();
+                            // _phoneController.clear();
+                            // _passwordController.clear();
                           }
                         },
                         style: ElevatedButton.styleFrom(
