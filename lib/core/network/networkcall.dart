@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:icg_navy/core/network/exceptions.dart';
+import '../../model/global_model/blood_group/get_blood_group_response.dart';
 import '../../model/global_model/company/get_company_response.dart';
 import '../../model/global_model/customers/get_customers_response.dart';
 import '../../model/global_model/divison/get_division_response.dart';
@@ -95,8 +96,6 @@ class Networkcall {
           case 6:
             final getCustomers = getCustomersResponseFromJson(str);
             return getCustomers;
-
-        
 
           default:
             log("Invalid request code: $requestCode");
@@ -271,6 +270,10 @@ class Networkcall {
           case 1:
             final login = getLoginResponseFromJson(str);
             return login;
+          case 2:
+            final getBloodGroup = getBloodGroupResponseFromJson(str);
+            return getBloodGroup;
+
           default:
             log("Invalid request code: $requestCode");
             throw ParseException('Unhandled request code: $requestCode');

@@ -167,6 +167,7 @@ class ConfirmationScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 OutlinedButton(

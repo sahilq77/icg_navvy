@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icg_navy/utility/app_utility.dart';
+import '../../controller/login/login_controller.dart';
 import '../../utility/app_colors.dart';
 import '../../utility/app_images.dart';
 import '../../utility/app_routes.dart';
@@ -15,9 +16,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  //final controller = Get.put(LoginController());
+  final controller = Get.put(LoginController());
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   static const Map<String, String> _emailToRole = {
@@ -27,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   };
 
   Future<void> handleLogin() async {
-    final email = _phoneController.text;
+    final email = _usernameController.text;
     if (_emailToRole.containsKey(email)) {
       await AppUtility.setUserInfo(
         "name",
@@ -44,13 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       Get.offNamed(AppRoutes.home);
     }
-    _phoneController.clear();
+    _usernameController.clear();
     _passwordController.clear();
   }
 
   @override
   void dispose() {
-    _phoneController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -131,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
-                        controller: _phoneController,
+                        controller: _usernameController,
                         decoration: const InputDecoration(
                           hintText: 'Enter username',
                         ),
@@ -147,75 +148,81 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        "Password",
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.defaultblack,
-                          fontSize: 15,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          hintText: "Enter password",
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                          ),
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.deny(RegExp(r'^\s')),
-                        ],
-                        obscureText: _obscurePassword,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          if (value.length < 8) {
-                            return 'Password must be at least 8 characters';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        'Must be at least 8 characters.',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: AppColors.textDark,
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: TextButton(
-                          onPressed: () {
-                            Get.toNamed(AppRoutes.forgotpassword);
-                          },
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textDark,
-                            ),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ),
 
+                      // Text(
+                      //   "Password",
+                      //   style: GoogleFonts.inter(
+                      //     fontWeight: FontWeight.w500,
+                      //     color: AppColors.defaultblack,
+                      //     fontSize: 15,
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 10),
+                      // TextFormField(
+                      //   controller: _passwordController,
+                      //   decoration: InputDecoration(
+                      //     hintText: "Enter password",
+                      //     suffixIcon: IconButton(
+                      //       icon: Icon(
+                      //         _obscurePassword
+                      //             ? Icons.visibility
+                      //             : Icons.visibility_off,
+                      //       ),
+                      //       onPressed: () {
+                      //         setState(() {
+                      //           _obscurePassword = !_obscurePassword;
+                      //         });
+                      //       },
+                      //     ),
+                      //   ),
+                      //   inputFormatters: [
+                      //     FilteringTextInputFormatter.deny(RegExp(r'^\s')),
+                      //   ],
+                      //   obscureText: _obscurePassword,
+                      //   validator: (value) {
+                      //     if (value == null || value.isEmpty) {
+                      //       return 'Please enter your password';
+                      //     }
+                      //     if (value.length < 8) {
+                      //       return 'Password must be at least 8 characters';
+                      //     }
+                      //     return null;
+                      //   },
+                      // ),
+                      // const SizedBox(height: 5),
+                      // Text(
+                      //   'Must be at least 8 characters.',
+                      //   style: GoogleFonts.inter(
+                      //     fontSize: 12,
+                      //     color: AppColors.textDark,
+                      //   ),
+                      // ),
+                      // Align(
+                      //   alignment: Alignment.topRight,
+                      //   child: TextButton(
+                      //     onPressed: () {
+                      //       Get.toNamed(AppRoutes.forgotpassword);
+                      //     },
+                      //     child: Text(
+                      //       'Forgot Password?',
+                      //       style: TextStyle(
+                      //         fontSize: 13,
+                      //         color: AppColors.textDark,
+                      //       ),
+                      //       textAlign: TextAlign.right,
+                      //     ),
+                      //   ),
+                      // ),
                       ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            handleLogin();
+                            controller.login(
+                              context: context,
+                              username: _usernameController.text.toString(),
+                              // mobile: _phoneController.text,
+                              // password: _passwordController.text,
+                            );
+                            //  handleLogin();
                             // _phoneController.clear();
                             // _passwordController.clear();
                           }

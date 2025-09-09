@@ -32,8 +32,8 @@ class ForgotPasswordController extends GetxController {
       //   password.value,
       // );
       List<Object?>? list = await Networkcall().postMethod(
-        Networkutility.forgotPasswordApi,
-        Networkutility.forgotPassword,
+        1,
+        "",
         jsonEncode(jsonBody),
         Get.context!,
       );
@@ -57,10 +57,10 @@ class ForgotPasswordController extends GetxController {
             backgroundColor: AppColors.success,
             colorText: Colors.white,
           );
-          Get.toNamed(
-            AppRoutes.newspassword,
-            arguments: user!.mobileNumber.toString(),
-          );
+          // Get.toNamed(
+          //   AppRoutes.newspassword,
+          //   arguments: user!.mobileNumber.toString(),
+          // );
           // Get.offNamed('/dashboard');
         } else if (response[0].status == "false") {
           Get.snackbar(
@@ -143,8 +143,8 @@ class ForgotPasswordController extends GetxController {
       //   password.value,
       // );
       List<Object?>? list = await Networkcall().postMethod(
-        Networkutility.forgotPasswordApi,
-        Networkutility.forgotPassword,
+        1,
+        "",
         jsonEncode(jsonBody),
         Get.context!,
       );
@@ -173,7 +173,7 @@ class ForgotPasswordController extends GetxController {
         } else {
           Get.snackbar(
             'Error',
-            response[0].message,
+            "Password not changed",
             backgroundColor: AppColors.error,
             colorText: Colors.white,
           );

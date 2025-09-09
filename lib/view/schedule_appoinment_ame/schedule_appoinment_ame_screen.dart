@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:icg_navy/controller/bottomnavigation/bottom_navigation_controller.dart';
+import 'package:icg_navy/controller/global_controller.dart/blood_group_controller.dart';
+import 'package:icg_navy/controller/user_details/user_details_controller.dart';
 import 'package:icg_navy/utility/app_colors.dart';
 import 'package:icg_navy/utility/app_images.dart';
 import 'package:icg_navy/utility/app_routes.dart';
@@ -168,6 +170,15 @@ class _ScheduleAppointmentAmeScreenState
     extends State<ScheduleAppointmentAmeScreen> {
   final controller = Get.put(ScheduleAppointmentController());
   final bottomController = Get.put(BottomNavigationController());
+  final userController = Get.put(UserDetailsController());
+  final bloodGroupController = Get.put(BloodGroupController());
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    bloodGroupController.fetchBloodGroups(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -220,9 +231,10 @@ class _ScheduleAppointmentAmeScreenState
                                   _textFieldTitle("Personal Number"),
                                   SizedBox(height: 5),
                                   TextFormField(
-                                    initialValue: controller
-                                        .appointment
-                                        .value
+                                    initialValue: userController
+                                        .userProfileList
+                                        .first
+                                        .personnel!
                                         .personalNumber,
                                     decoration: InputDecoration(filled: true),
                                     enabled: false,
@@ -252,18 +264,97 @@ class _ScheduleAppointmentAmeScreenState
                         _textFieldTitle("Name"),
                         SizedBox(height: 5),
                         TextFormField(
-                          initialValue: controller.appointment.value.name,
+                          initialValue: userController
+                              .userProfileList
+                              .first
+                              .personnel!
+                              .fullName,
                           decoration: InputDecoration(filled: true),
                           enabled: false,
                         ),
                         SizedBox(height: 10),
                         _textFieldTitle("Blood Group"),
                         SizedBox(height: 5),
-                        TextFormField(
-                          initialValue: controller.appointment.value.bloodGroup,
-                          decoration: InputDecoration(filled: true),
-                          enabled: false,
-                        ),
+                        Obx(() {
+                          // Get the blood group name corresponding to the user's blood group code
+                          String? initialBloodGroup = bloodGroupController
+                              .getBloodGroupNameById(
+                                userController
+                                        .userProfileList
+                                        .first
+                                        .personnel!
+                                        .bloodGroupCode ??
+                                    '',
+                              );
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              DropdownSearch<String>(
+                                popupProps: const PopupProps.menu(
+                                  showSelectedItems: true,
+                                  showSearchBox: true,
+                                  searchFieldProps: TextFieldProps(
+                                    decoration: InputDecoration(
+                                      labelText: 'Search Blood Group',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
+                                items: bloodGroupController
+                                    .getBloodGroupNames(),
+
+                                dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    hintText: "Select Blood Group",
+                                    border: const OutlineInputBorder(),
+                                    errorText:
+                                        bloodGroupController
+                                            .errorMessage
+                                            .value
+                                            .isNotEmpty
+                                        ? bloodGroupController
+                                              .errorMessage
+                                              .value
+                                        : null,
+                                  ),
+                                ),
+                                onChanged: (String? selectedBloodGroup) {
+                                  if (selectedBloodGroup != null) {
+                                    bloodGroupController.selectedBloodGroupVal =
+                                        selectedBloodGroup.obs;
+                                    String? bloodGroupCode =
+                                        bloodGroupController.getBloodGroupId(
+                                          selectedBloodGroup,
+                                        );
+                                    print(
+                                      'Selected Blood Group: $selectedBloodGroup, Code: $bloodGroupCode',
+                                    );
+                                    // Optionally, update the appointment model with the selected blood group
+                                    controller.appointment.update((val) {
+                                      val?.bloodGroup = selectedBloodGroup;
+                                    });
+                                  }
+                                },
+                                selectedItem:
+                                    initialBloodGroup ??
+                                    bloodGroupController
+                                        .selectedBloodGroupVal
+                                        ?.value,
+                              ),
+                              if (bloodGroupController.isLoading.value)
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: CircularProgressIndicator(),
+                                ),
+                            ],
+                          );
+                        }),
+                        // TextFormField(
+                        //   initialValue: controller.appointment.value.bloodGroup,
+                        //   decoration: InputDecoration(filled: true),
+                        //   enabled: false,
+                        // ),
                       ],
                     ),
                   ),

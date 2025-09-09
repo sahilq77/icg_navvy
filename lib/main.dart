@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icg_navy/controller/bottomnavigation/bottom_navigation_controller.dart';
+import 'package:icg_navy/controller/global_controller.dart/blood_group_controller.dart';
 import 'package:icg_navy/utility/app_colors.dart';
 import 'package:icg_navy/utility/customdesign/connctivityservice.dart';
 
@@ -11,7 +12,7 @@ import 'utility/app_routes.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized(); // Initialize binding
   Get.put(ConnectivityService(), permanent: true);
-  // Get.lazyPut<CompanyController>(() => CompanyController(), fenix: true);
+   Get.lazyPut<BloodGroupController>(() => BloodGroupController(), fenix: true);
   // Get.lazyPut<DivsionController>(() => DivsionController(), fenix: true);
   // Get.lazyPut<CustomerController>(() => CustomerController(), fenix: true);
   // Get.lazyPut<StatusController>(() => StatusController(), fenix: true);
