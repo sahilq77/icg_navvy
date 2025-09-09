@@ -6,4 +6,17 @@ class Networkutility {
   static int loginApi = 1;
   static String getBloodGroup = "${baseUrl2 + "bloodGroup/v1"}";
   static int getBloodGroupApi = 2;
+  static String getRank = "${baseUrl2 + "v1/idName/"}";
+  static int getRankApi = 3;
+  static String getServiceDetails = "${baseUrl2 + "v1/idName"}";
+  static int getServiceDetailsApi = 4;
+  static String getUnit = "${baseUrl + "v1/idName"}";
+  static int getUnitApi = 5;
+  static String getBranch = "${baseUrl + "appointment/v1/branches"}";
+  static int getBranchApi = 6;
+  static String getService = "${baseUrl + "v1/idName?serviceTypeYn=1"}";
+  static int getServiceApi = 7;
+static String getMedicalCategory = "${baseUrl2 + "v1/idName/filter?dataKey=MEDCAT"}";
+  static int getMedicalCategoryApi = 8;
+  
 }

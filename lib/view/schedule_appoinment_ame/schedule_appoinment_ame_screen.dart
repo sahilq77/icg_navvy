@@ -5,12 +5,21 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:icg_navy/controller/bottomnavigation/bottom_navigation_controller.dart';
-import 'package:icg_navy/controller/global_controller.dart/blood_group_controller.dart';
+import 'package:icg_navy/controller/global_controller/all_unit/all_unit_controller.dart';
+import 'package:icg_navy/controller/global_controller/blood_group/blood_group_controller.dart';
+import 'package:icg_navy/controller/global_controller/branch/branch_controller.dart';
+import 'package:icg_navy/controller/global_controller/rank/rank_controller.dart';
 import 'package:icg_navy/controller/user_details/user_details_controller.dart';
 import 'package:icg_navy/utility/app_colors.dart';
 import 'package:icg_navy/utility/app_images.dart';
 import 'package:icg_navy/utility/app_routes.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../../controller/global_controller/command/commnand_controller.dart';
+import '../../controller/global_controller/gender/gender_controller.dart';
+import '../../controller/global_controller/medical_category/medical_category_controller.dart';
+import '../../controller/global_controller/service/service_controller.dart';
+import '../../controller/global_controller/unit/unit_controller.dart';
 import '../bottomnavigation/bottomnavigation.dart';
 
 class AppointmentModel {
@@ -172,11 +181,27 @@ class _ScheduleAppointmentAmeScreenState
   final bottomController = Get.put(BottomNavigationController());
   final userController = Get.put(UserDetailsController());
   final bloodGroupController = Get.put(BloodGroupController());
+  final rankController = Get.put(RankController());
+  final commandController = Get.put(CommandController());
+  final genderController = Get.put(GenderController());
+  final unitController = Get.put(UnitController());
+  final allUnitController = Get.put(AllUnitController());
+  final branchController = Get.put(BranchController());
+  final serviceController = Get.put(ServiceController());
+  final medicalCategoryController = Get.put(MedicalCategoryController());
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    // Fetch user profile and other data
+    userController.fetchUserProfile(context: context);
+    rankController.fetchRank(context: context);
     bloodGroupController.fetchBloodGroups(context: context);
+    commandController.fetchCommand(context: context);
+    allUnitController.fetchUnit(context: context);
+    branchController.fetchBranches(context: context);
+    serviceController.fetchService(context: context);
+    medicalCategoryController.fetchMedicalCategory(context: context);
   }
 
   @override
@@ -200,18 +225,18 @@ class _ScheduleAppointmentAmeScreenState
           ),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(0),
-            child: Divider(
-              color: const Color(0xFFDADADA),
-              // thickness: 2,
-              height: 0,
-            ),
+            child: Divider(color: const Color(0xFFDADADA), height: 0),
           ),
         ),
-
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Obx(
-            () => Column(
+        body: Obx(() {
+          // Check if user profile is loading or empty
+          if (userController.isLoading.value ||
+              userController.userProfileList.isEmpty) {
+            return _buildShimmerScreen();
+          }
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Card(
@@ -231,11 +256,13 @@ class _ScheduleAppointmentAmeScreenState
                                   _textFieldTitle("Personal Number"),
                                   SizedBox(height: 5),
                                   TextFormField(
-                                    initialValue: userController
-                                        .userProfileList
-                                        .first
-                                        .personnel!
-                                        .personalNumber,
+                                    initialValue:
+                                        userController
+                                            .userProfileList
+                                            .first
+                                            .personnel
+                                            ?.personalNumber ??
+                                        '',
                                     decoration: InputDecoration(filled: true),
                                     enabled: false,
                                   ),
@@ -249,11 +276,63 @@ class _ScheduleAppointmentAmeScreenState
                                 children: [
                                   _textFieldTitle("Rank"),
                                   SizedBox(height: 5),
-                                  TextFormField(
-                                    initialValue:
-                                        controller.appointment.value.rank,
-                                    decoration: InputDecoration(filled: true),
-                                    enabled: false,
+                                  _buildShimmerDropdown(
+                                    isLoading: rankController.isLoading.value,
+                                    child: DropdownSearch<String>(
+                                      popupProps: const PopupProps.menu(
+                                        showSelectedItems: true,
+                                        showSearchBox: true,
+                                        searchFieldProps: TextFieldProps(
+                                          decoration: InputDecoration(
+                                            labelText: 'Search Rank',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                      ),
+                                      items: rankController.getRankNames(),
+                                      dropdownDecoratorProps:
+                                          DropDownDecoratorProps(
+                                            dropdownSearchDecoration:
+                                                InputDecoration(
+                                                  hintText: "Select Rank",
+                                                  border:
+                                                      const OutlineInputBorder(),
+                                                  errorText:
+                                                      rankController
+                                                          .errorMessage
+                                                          .value
+                                                          .isNotEmpty
+                                                      ? rankController
+                                                            .errorMessage
+                                                            .value
+                                                      : null,
+                                                ),
+                                          ),
+                                      onChanged: (String? selectedRank) {
+                                        if (selectedRank != null) {
+                                          rankController.selectedRankVal =
+                                              selectedRank.obs;
+                                          String? rankCode = rankController
+                                              .getRankId(selectedRank);
+                                          print(
+                                            'Selected Rank: $selectedRank, Code: $rankCode',
+                                          );
+                                          controller.appointment.update((val) {
+                                            val?.rank = selectedRank;
+                                          });
+                                        }
+                                      },
+                                      selectedItem:
+                                          rankController.getRankNameById(
+                                            userController
+                                                    .userProfileList
+                                                    .first
+                                                    .personnel
+                                                    ?.rankCode ??
+                                                '',
+                                          ) ??
+                                          rankController.selectedRankVal?.value,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -264,97 +343,74 @@ class _ScheduleAppointmentAmeScreenState
                         _textFieldTitle("Name"),
                         SizedBox(height: 5),
                         TextFormField(
-                          initialValue: userController
-                              .userProfileList
-                              .first
-                              .personnel!
-                              .fullName,
+                          initialValue:
+                              userController
+                                  .userProfileList
+                                  .first
+                                  .personnel
+                                  ?.fullName ??
+                              '',
                           decoration: InputDecoration(filled: true),
                           enabled: false,
                         ),
                         SizedBox(height: 10),
                         _textFieldTitle("Blood Group"),
                         SizedBox(height: 5),
-                        Obx(() {
-                          // Get the blood group name corresponding to the user's blood group code
-                          String? initialBloodGroup = bloodGroupController
-                              .getBloodGroupNameById(
-                                userController
-                                        .userProfileList
-                                        .first
-                                        .personnel!
-                                        .bloodGroupCode ??
-                                    '',
-                              );
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DropdownSearch<String>(
-                                popupProps: const PopupProps.menu(
-                                  showSelectedItems: true,
-                                  showSearchBox: true,
-                                  searchFieldProps: TextFieldProps(
-                                    decoration: InputDecoration(
-                                      labelText: 'Search Blood Group',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  ),
+                        _buildShimmerDropdown(
+                          isLoading: bloodGroupController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Blood Group',
+                                  border: OutlineInputBorder(),
                                 ),
-                                items: bloodGroupController
-                                    .getBloodGroupNames(),
-
-                                dropdownDecoratorProps: DropDownDecoratorProps(
-                                  dropdownSearchDecoration: InputDecoration(
-                                    hintText: "Select Blood Group",
-                                    border: const OutlineInputBorder(),
-                                    errorText:
-                                        bloodGroupController
-                                            .errorMessage
-                                            .value
-                                            .isNotEmpty
-                                        ? bloodGroupController
-                                              .errorMessage
-                                              .value
-                                        : null,
-                                  ),
-                                ),
-                                onChanged: (String? selectedBloodGroup) {
-                                  if (selectedBloodGroup != null) {
-                                    bloodGroupController.selectedBloodGroupVal =
-                                        selectedBloodGroup.obs;
-                                    String? bloodGroupCode =
-                                        bloodGroupController.getBloodGroupId(
-                                          selectedBloodGroup,
-                                        );
-                                    print(
-                                      'Selected Blood Group: $selectedBloodGroup, Code: $bloodGroupCode',
-                                    );
-                                    // Optionally, update the appointment model with the selected blood group
-                                    controller.appointment.update((val) {
-                                      val?.bloodGroup = selectedBloodGroup;
-                                    });
-                                  }
-                                },
-                                selectedItem:
-                                    initialBloodGroup ??
-                                    bloodGroupController
-                                        .selectedBloodGroupVal
-                                        ?.value,
                               ),
-                              if (bloodGroupController.isLoading.value)
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                                  child: CircularProgressIndicator(),
-                                ),
-                            ],
-                          );
-                        }),
-                        // TextFormField(
-                        //   initialValue: controller.appointment.value.bloodGroup,
-                        //   decoration: InputDecoration(filled: true),
-                        //   enabled: false,
-                        // ),
+                            ),
+                            items: bloodGroupController.getBloodGroupNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Select Blood Group",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    bloodGroupController
+                                        .errorMessage
+                                        .value
+                                        .isNotEmpty
+                                    ? bloodGroupController.errorMessage.value
+                                    : null,
+                              ),
+                            ),
+                            onChanged: (String? selectedBloodGroup) {
+                              if (selectedBloodGroup != null) {
+                                bloodGroupController.selectedBloodGroupVal =
+                                    selectedBloodGroup.obs;
+                                String? bloodGroupCode = bloodGroupController
+                                    .getBloodGroupId(selectedBloodGroup);
+                                print(
+                                  'Selected Blood Group: $selectedBloodGroup, Code: $bloodGroupCode',
+                                );
+                                controller.appointment.update((val) {
+                                  val?.bloodGroup = selectedBloodGroup;
+                                });
+                              }
+                            },
+                            selectedItem:
+                                bloodGroupController.getBloodGroupNameById(
+                                  userController
+                                          .userProfileList
+                                          .first
+                                          .personnel
+                                          ?.bloodGroupCode ??
+                                      '',
+                                ) ??
+                                bloodGroupController
+                                    .selectedBloodGroupVal
+                                    ?.value,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -370,70 +426,302 @@ class _ScheduleAppointmentAmeScreenState
                         SizedBox(height: 10),
                         _textFieldTitle("Command"),
                         SizedBox(height: 5),
-                        TextFormField(
-                          initialValue: controller.appointment.value.command,
-                          decoration: InputDecoration(filled: true),
-                          enabled: false,
+                        _buildShimmerDropdown(
+                          isLoading: commandController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Command',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            items: commandController.getCommandNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Select Command",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    commandController
+                                        .errorMessage
+                                        .value
+                                        .isNotEmpty
+                                    ? commandController.errorMessage.value
+                                    : null,
+                              ),
+                            ),
+                            onChanged: (String? selectedCommand) {
+                              if (selectedCommand != null) {
+                                commandController.selectedCommandVal =
+                                    selectedCommand.obs;
+                                String? commandCode = commandController
+                                    .getCommandId(selectedCommand);
+                                unitController.selectedUnitVal = null;
+                                unitController.unitList.clear();
+                                controller.appointment.update((val) {
+                                  val?.unit = '';
+                                });
+                                unitController.fetchUnit(
+                                  context: context,
+                                  commandCode: commandCode!,
+                                );
+                                print(
+                                  'Selected Command: $selectedCommand, Code: $commandCode',
+                                );
+                                controller.appointment.update((val) {
+                                  val?.command = selectedCommand;
+                                });
+                              }
+                            },
+                            selectedItem:
+                                commandController.getCommandNameById(
+                                  userController
+                                          .userProfileList
+                                          .first
+                                          .personnel
+                                          ?.commandCode ??
+                                      '',
+                                ) ??
+                                commandController.selectedCommandVal?.value,
+                          ),
                         ),
                         SizedBox(height: 10),
                         _textFieldTitle("Unit"),
                         SizedBox(height: 5),
-                        TextFormField(
-                          initialValue: controller.appointment.value.unit,
-                          decoration: InputDecoration(filled: true),
-                          enabled: false,
+                        _buildShimmerDropdown(
+                          isLoading: unitController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Unit',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            items: unitController.getUnitNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Select Unit",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    unitController.errorMessage.value.isNotEmpty
+                                    ? unitController.errorMessage.value
+                                    : null,
+                              ),
+                            ),
+                            onChanged: (String? selectedUnit) {
+                              if (selectedUnit != null) {
+                                unitController.selectedUnitVal =
+                                    selectedUnit.obs;
+                                String? unitCode = unitController.getUnitId(
+                                  selectedUnit,
+                                );
+                                print(
+                                  'Selected Unit: $selectedUnit, Code: $unitCode',
+                                );
+                                controller.appointment.update((val) {
+                                  val?.unit = selectedUnit;
+                                });
+                              }
+                            },
+                            selectedItem:
+                                unitController.getUnitNameById(
+                                  userController
+                                          .userProfileList
+                                          .first
+                                          .personnel
+                                          ?.unitCode ??
+                                      '',
+                                ) ??
+                                unitController.selectedUnitVal?.value,
+                          ),
                         ),
                         SizedBox(height: 10),
                         _textFieldTitle("Arm/Corps/Branch/Trade"),
                         SizedBox(height: 5),
-                        TextFormField(
-                          initialValue:
-                              controller.appointment.value.armCorpsBranchTrade,
-                          decoration: InputDecoration(filled: true),
-                          enabled: false,
+                        _buildShimmerDropdown(
+                          isLoading: branchController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Branch',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            items: branchController.getBranchNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Select Branch",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    branchController
+                                        .errorMessage
+                                        .value
+                                        .isNotEmpty
+                                    ? branchController.errorMessage.value
+                                    : null,
+                              ),
+                            ),
+                            onChanged: (String? selectedBranch) {
+                              if (selectedBranch != null) {
+                                branchController.selectedBranchVal =
+                                    selectedBranch.obs;
+                                String? branchCode = branchController
+                                    .getBranchId(selectedBranch);
+                                unitController.selectedUnitVal = null;
+                                unitController.unitList.clear();
+                                controller.appointment.update((val) {
+                                  val?.unit = '';
+                                  val?.armCorpsBranchTrade = selectedBranch;
+                                });
+                                print(
+                                  'Selected Branch: $selectedBranch, Code: $branchCode',
+                                );
+                                controller.appointment.update((val) {
+                                  val?.armCorpsBranchTrade = selectedBranch;
+                                });
+                              }
+                            },
+                            selectedItem:
+                                branchController.selectedBranchVal?.value ??
+                                'Select Branch',
+                          ),
                         ),
                         SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _textFieldTitle("Gender"),
-                                  SizedBox(height: 5),
-                                  TextFormField(
-                                    initialValue:
-                                        controller.appointment.value.gender,
-                                    decoration: InputDecoration(filled: true),
-                                    enabled: false,
-                                  ),
-                                ],
+                        _textFieldTitle("Gender"),
+                        SizedBox(height: 5),
+                        _buildShimmerDropdown(
+                          isLoading: genderController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Gender',
+                                  border: OutlineInputBorder(),
+                                ),
                               ),
                             ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _textFieldTitle("Service"),
-                                  SizedBox(height: 5),
-                                  TextFormField(
-                                    initialValue:
-                                        controller.appointment.value.service,
-                                    decoration: InputDecoration(filled: true),
-                                    enabled: false,
-                                  ),
-                                ],
+                            items: genderController.getGenderNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Gender",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    genderController
+                                        .errorMessage
+                                        .value
+                                        .isNotEmpty
+                                    ? genderController.errorMessage.value
+                                    : null,
                               ),
                             ),
-                          ],
+                            onChanged: (String? selectedGender) {
+                              if (selectedGender != null) {
+                                genderController.selectedGenderVal =
+                                    selectedGender.obs;
+                                String? genderCode = genderController
+                                    .getGenderId(selectedGender);
+                                print(
+                                  'Selected Gender: $selectedGender, Code: $genderCode',
+                                );
+                                controller.appointment.update((val) {
+                                  val?.gender = selectedGender;
+                                });
+                              }
+                            },
+                            selectedItem:
+                                genderController.getGenderNameById(
+                                  userController
+                                          .userProfileList
+                                          .first
+                                          .personnel
+                                          ?.employeeGender ??
+                                      '',
+                                ) ??
+                                genderController.selectedGenderVal?.value,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        _textFieldTitle("Service"),
+                        SizedBox(height: 5),
+                        _buildShimmerDropdown(
+                          isLoading: serviceController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Service',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            items: serviceController.getServiceNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Select Service",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    serviceController
+                                        .errorMessage
+                                        .value
+                                        .isNotEmpty
+                                    ? serviceController.errorMessage.value
+                                    : null,
+                              ),
+                            ),
+                            onChanged: (String? selectedService) {
+                              if (selectedService != null) {
+                                serviceController.selectedServiceVal =
+                                    selectedService.obs;
+                                String? serviceCode = serviceController
+                                    .getServiceId(selectedService);
+                                print(
+                                  'Selected Service: $selectedService, Code: $serviceCode',
+                                );
+                                controller.appointment.update((val) {
+                                  val?.service = selectedService;
+                                });
+                              }
+                            },
+                            selectedItem:
+                                serviceController.getServiceNameById(
+                                  userController
+                                          .userProfileList
+                                          .first
+                                          .personnel
+                                          ?.serviceCode ??
+                                      '',
+                                ) ??
+                                serviceController.selectedServiceVal?.value ??
+                                'Select Service',
+                          ),
                         ),
                         SizedBox(height: 10),
                         _textFieldTitle("Date of Birth"),
                         SizedBox(height: 5),
                         TextFormField(
                           initialValue:
-                              controller.appointment.value.dateOfBirth,
+                              userController
+                                  .userProfileList
+                                  .first
+                                  .personnel
+                                  ?.dateOfBirth
+                                  ?.toString() ??
+                              '',
                           decoration: InputDecoration(filled: true),
                           enabled: false,
                         ),
@@ -447,10 +735,13 @@ class _ScheduleAppointmentAmeScreenState
                                   _textFieldTitle("Total Service"),
                                   SizedBox(height: 5),
                                   TextFormField(
-                                    initialValue: controller
-                                        .appointment
-                                        .value
-                                        .totalService,
+                                    initialValue:
+                                        userController
+                                            .userProfileList
+                                            .first
+                                            .personnel
+                                            ?.totalService ??
+                                        '',
                                     decoration: InputDecoration(filled: true),
                                     enabled: false,
                                   ),
@@ -480,11 +771,59 @@ class _ScheduleAppointmentAmeScreenState
                         SizedBox(height: 10),
                         _textFieldTitle("Last AME/PME carried out at"),
                         SizedBox(height: 5),
-                        TextFormField(
-                          initialValue:
-                              controller.appointment.value.lastAmePmeLocation,
-                          decoration: InputDecoration(filled: true),
-                          enabled: false,
+                        _buildShimmerDropdown(
+                          isLoading: allUnitController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Unit',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            items: allUnitController.getUnitNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Select Unit",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    allUnitController
+                                        .errorMessage
+                                        .value
+                                        .isNotEmpty
+                                    ? allUnitController.errorMessage.value
+                                    : null,
+                              ),
+                            ),
+                            onChanged: (String? selectedUnit) {
+                              if (selectedUnit != null) {
+                                allUnitController.selectedUnitVal =
+                                    selectedUnit.obs;
+                                String? unitCode = allUnitController.getUnitId(
+                                  selectedUnit,
+                                );
+                                print(
+                                  'Selected Unit: $selectedUnit, Code: $unitCode',
+                                );
+                                controller.appointment.update((val) {
+                                  val?.lastAmePmeLocation = selectedUnit;
+                                });
+                              }
+                            },
+                            selectedItem:
+                                allUnitController.getUnitNameById(
+                                  userController
+                                          .userProfileList
+                                          .first
+                                          .personnel
+                                          ?.unitCode ??
+                                      '',
+                                ) ??
+                                allUnitController.selectedUnitVal?.value,
+                          ),
                         ),
                         SizedBox(height: 10),
                         _textFieldTitle("Last Examination date"),
@@ -521,7 +860,12 @@ class _ScheduleAppointmentAmeScreenState
                                   SizedBox(height: 5),
                                   TextFormField(
                                     initialValue:
-                                        controller.appointment.value.age,
+                                        userController
+                                            .userProfileList
+                                            .first
+                                            .personnel
+                                            ?.age ??
+                                        '',
                                     decoration: InputDecoration(filled: true),
                                     enabled: false,
                                   ),
@@ -558,13 +902,58 @@ class _ScheduleAppointmentAmeScreenState
                         SizedBox(height: 10),
                         _textFieldTitle("Present Medical Category"),
                         SizedBox(height: 5),
-                        TextFormField(
-                          initialValue: controller
-                              .appointment
-                              .value
-                              .presentMedicalCategory,
-                          decoration: InputDecoration(filled: true),
-                          enabled: false,
+                        _buildShimmerDropdown(
+                          isLoading: medicalCategoryController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Medical Category',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            items: medicalCategoryController.getMedicalNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Select Medical Category",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    medicalCategoryController
+                                        .errorMessage
+                                        .value
+                                        .isNotEmpty
+                                    ? medicalCategoryController
+                                          .errorMessage
+                                          .value
+                                    : null,
+                              ),
+                            ),
+                            onChanged: (String? selectedMedicalCategory) {
+                              if (selectedMedicalCategory != null) {
+                                medicalCategoryController.selectedMedicalVal =
+                                    selectedMedicalCategory.obs;
+                                String? medicalCategoryCode =
+                                    medicalCategoryController.getMedicalId(
+                                      selectedMedicalCategory,
+                                    );
+                                print(
+                                  'Selected Medical Category: $selectedMedicalCategory, Code: $medicalCategoryCode',
+                                );
+                                controller.appointment.update((val) {
+                                  val?.presentMedicalCategory =
+                                      selectedMedicalCategory;
+                                });
+                              }
+                            },
+                            selectedItem:
+                                medicalCategoryController
+                                    .selectedMedicalVal
+                                    ?.value ??
+                                'Select Medical Category',
+                          ),
                         ),
                       ],
                     ),
@@ -590,7 +979,6 @@ class _ScheduleAppointmentAmeScreenState
                             searchFieldProps: TextFieldProps(
                               decoration: InputDecoration(
                                 hintText: "Search year...",
-                                //filled: true,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -600,7 +988,6 @@ class _ScheduleAppointmentAmeScreenState
                           items: ['Select Appointment Year', '2025', '2026'],
                           dropdownDecoratorProps: DropDownDecoratorProps(
                             dropdownSearchDecoration: InputDecoration(
-                              //        filled: true,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -618,7 +1005,6 @@ class _ScheduleAppointmentAmeScreenState
                             text: controller.appointment.value.preferredDate,
                           ),
                           decoration: InputDecoration(
-                            //filled: true,
                             suffixIcon: Icon(Icons.calendar_today),
                           ),
                           readOnly: true,
@@ -632,7 +1018,6 @@ class _ScheduleAppointmentAmeScreenState
                             text: controller.appointment.value.scheduledDueDate,
                           ),
                           decoration: InputDecoration(
-                            // filled: true,
                             suffixIcon: Icon(Icons.calendar_today),
                           ),
                           readOnly: true,
@@ -644,9 +1029,7 @@ class _ScheduleAppointmentAmeScreenState
                         TextFormField(
                           initialValue:
                               controller.appointment.value.mobileNumber,
-                          decoration: InputDecoration(
-                            //   filled: true
-                          ),
+                          decoration: InputDecoration(),
                           enabled: false,
                         ),
                       ],
@@ -725,12 +1108,7 @@ class _ScheduleAppointmentAmeScreenState
                             style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: const Color.from(
-                                alpha: 1,
-                                red: 0.216,
-                                green: 0.235,
-                                blue: 0.231,
-                              ),
+                              color: Color.fromRGBO(55, 60, 59, 1),
                             ),
                           ),
                         ),
@@ -855,11 +1233,11 @@ class _ScheduleAppointmentAmeScreenState
                                 noneOfAbove: value == true ? false : null,
                               ),
                           controlAffinity: ListTileControlAffinity.leading,
-                          dense: true, // Reduces vertical height
+                          dense: true,
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 0,
-                          ), // Adjust padding
+                          ),
                         ),
                         CheckboxListTile(
                           title: Text(
@@ -874,11 +1252,11 @@ class _ScheduleAppointmentAmeScreenState
                           onChanged: (value) => controller
                               .updateSpecialCategory(noneOfAbove: value),
                           controlAffinity: ListTileControlAffinity.leading,
-                          dense: true, // Reduces vertical height
+                          dense: true,
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 0,
-                          ), // Adjust padding
+                          ),
                         ),
                       ],
                     ),
@@ -906,11 +1284,134 @@ class _ScheduleAppointmentAmeScreenState
                 SizedBox(height: 20),
               ],
             ),
-          ),
-        ),
+          );
+        }),
         bottomNavigationBar: CustomBottomBar(),
       ),
     );
+  }
+
+  Widget _buildShimmerScreen() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _sectionTitle(AppImages.personIcon, "Personal Details"),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(child: _buildShimmerField()),
+                      SizedBox(width: 10),
+                      Expanded(child: _buildShimmerField()),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 15),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _sectionTitle(AppImages.serviceIcon, "Service Details"),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(child: _buildShimmerField()),
+                      SizedBox(width: 10),
+                      Expanded(child: _buildShimmerField()),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 15),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _sectionTitle(AppImages.heartbeatIcon, "Medical Details"),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(child: _buildShimmerField()),
+                      SizedBox(width: 10),
+                      Expanded(child: _buildShimmerField()),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                  SizedBox(height: 10),
+                  _buildShimmerField(),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShimmerField() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerDropdown({
+    required bool isLoading,
+    required Widget child,
+  }) {
+    return isLoading
+        ? Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          )
+        : child;
   }
 
   Row _sectionTitle(String icon, String title) {

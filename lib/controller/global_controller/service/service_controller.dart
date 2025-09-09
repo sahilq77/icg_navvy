@@ -2,19 +2,21 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../model/global_model/blood_group/get_blood_group_response.dart';
+import 'package:icg_navy/model/global_model/service/get_service_response.dart';
+import 'package:icg_navy/model/global_model/service_details/get_service_details_response.dart';
+import 'package:icg_navy/utility/app_utility.dart';
 import '../../../core/network/exceptions.dart';
 import '../../../core/network/networkcall.dart';
 import '../../../core/urls.dart';
 import '../../../utility/app_colors.dart';
 
-class BloodGroupController extends GetxController {
-  RxList<BloodGroupData> bloodGroupList = <BloodGroupData>[].obs;
+class ServiceController extends GetxController {
+  RxList<ServiceType> serviceList = <ServiceType>[].obs;
   var isLoading = false.obs;
   var errorMessage = ''.obs;
-  RxString? selectedBloodGroupVal; // Renamed from selectedCompanyVal
+  RxString? selectedServiceVal;
 
-  static BloodGroupController get to => Get.find();
+  static ServiceController get to => Get.find();
 
   @override
   void onInit() {
@@ -22,39 +24,40 @@ class BloodGroupController extends GetxController {
     // Defer fetching until context is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Get.context != null) {
-        fetchBloodGroups(context: Get.context!);
+        fetchService(context: Get.context!);
       }
     });
   }
 
-  Future<void> fetchBloodGroups({
+  Future<void> fetchService({
     required BuildContext context,
     bool forceFetch = false,
   }) async {
-    log("Blood group API call"); // Updated log message
-    if (!forceFetch && bloodGroupList.isNotEmpty) return;
+    log("ServiceType API call");
+    if (!forceFetch && serviceList.isNotEmpty) return;
 
     try {
       isLoading.value = true;
       errorMessage.value = '';
-      // final jsonBody = {"employee_id": AppUtility.userID.toString()};
 
-      List<GetBloodGroupResponse>? response =
+      List<GetServiceResponse>? response =
           await Networkcall().getMethod(
-                Networkutility.getBloodGroupApi,
-                Networkutility.getBloodGroup,
+                Networkutility.getServiceApi,
+                Networkutility.getService,
                 Get.context!,
-              ) as List<GetBloodGroupResponse>?;
+              )
+              as List<GetServiceResponse>?;
 
       log(
-        'Fetch Blood Groups Response: ${response?.isNotEmpty == true ? response![0].toJson() : 'null'}', // Updated log message
+        'Fetch ServiceType Response: ${response?.isNotEmpty == true ? response![0].toJson() : 'null'}',
       );
 
       if (response != null && response.isNotEmpty) {
         if (response[0].status == "Success") {
-          bloodGroupList.value = response[0].data as List<BloodGroupData>;
+          serviceList.value =
+              response[0].data!.first.serviceTypes as List<ServiceType>;
           log(
-            'Blood Group List Loaded: ${bloodGroupList.map((s) => "${s.bloodGroupCode}: ${s.bloodGroupName}").toList()}', // Updated log message
+            'ServiceType List Loaded: ${serviceList.map((s) => "${s.code}: ${s.name}").toList()}',
           );
         } else {
           errorMessage.value = response[0].status.toString();
@@ -108,7 +111,7 @@ class BloodGroupController extends GetxController {
       );
     } catch (e, stackTrace) {
       errorMessage.value = 'Unexpected error: $e';
-      log('Fetch Blood Groups Exception: $e, stack: $stackTrace'); // Updated log message
+      log('Fetch ServiceType Exception: $e, stack: $stackTrace');
       Get.snackbar(
         'Error',
         'Unexpected error: $e',
@@ -120,26 +123,21 @@ class BloodGroupController extends GetxController {
     }
   }
 
-  List<String> getBloodGroupNames() {
-    return bloodGroupList
-        .map((s) => s.bloodGroupName.toString())
-        .toSet()
-        .toList();
+  List<String> getServiceNames() {
+    return serviceList.map((s) => s.name.toString()).toSet().toList();
   }
 
-  String? getBloodGroupId(String bloodGroupName) {
-    return bloodGroupList
-            .firstWhereOrNull(
-              (state) => state.bloodGroupName.toString() == bloodGroupName,
-            )
-            ?.bloodGroupCode ??
+  String? getServiceId(String name) {
+    return serviceList
+            .firstWhereOrNull((state) => state.name.toString() == name)
+            ?.code ??
         '';
   }
 
-  String? getBloodGroupNameById(String bloodGroupId) {
-    return bloodGroupList
-        .firstWhereOrNull((state) => state.bloodGroupCode == bloodGroupId)
-        ?.bloodGroupName
+  String? getServiceNameById(String serviceId) {
+    return serviceList
+        .firstWhereOrNull((state) => state.code == serviceId)
+        ?.name
         .toString();
   }
 }

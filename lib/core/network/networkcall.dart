@@ -8,14 +8,12 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:icg_navy/core/network/exceptions.dart';
 import '../../model/global_model/blood_group/get_blood_group_response.dart';
-import '../../model/global_model/company/get_company_response.dart';
-import '../../model/global_model/customers/get_customers_response.dart';
-import '../../model/global_model/divison/get_division_response.dart';
-import '../../model/global_model/employee/get_employee_response.dart';
-import '../../model/global_model/get_sales_team_response.dart';
-import '../../model/global_model/status/get_status_response.dart';
-import '../../model/global_model/store_employee/get_store_employee.dart';
-import '../../model/global_model/transport/get_all_transport_response.dart';
+import '../../model/global_model/branch/get_branch_response.dart';
+import '../../model/global_model/medical_category/get_medical_category_response.dart';
+import '../../model/global_model/rank/get_rank_response.dart';
+import '../../model/global_model/service/get_service_response.dart';
+import '../../model/global_model/service_details/get_service_details_response.dart';
+import '../../model/global_model/unit/get_unit_response.dart';
 import '../../model/inward_list/get_delete_inward_response.dart';
 import '../../model/inward_list/get_view_notes_response.dart';
 import '../../model/login/get_login_response.dart';
@@ -84,18 +82,18 @@ class Networkcall {
           case 2:
             final forgotPassword = getLoginResponseFromJson(str);
             return forgotPassword;
-          case 3:
-            final getCompany = getCompanyResponseFromJson(str);
-            return getCompany;
-          case 4:
-            final getDivision = getDivisonResponseFromJson(str);
-            return getDivision;
-          case 5:
-            final getTransport = getAllTrasnsportResponseFromJson(str);
-            return getTransport;
-          case 6:
-            final getCustomers = getCustomersResponseFromJson(str);
-            return getCustomers;
+          // case 3:
+          //   final getCompany = getCompanyResponseFromJson(str);
+          //   return getCompany;
+          // case 4:
+          //   final getDivision = getDivisonResponseFromJson(str);
+          //   return getDivision;
+          // case 5:
+          //   final getTransport = getAllTrasnsportResponseFromJson(str);
+          //   return getTransport;
+          // case 6:
+          //   final getCustomers = getCustomersResponseFromJson(str);
+          //   return getCustomers;
 
           default:
             log("Invalid request code: $requestCode");
@@ -273,6 +271,24 @@ class Networkcall {
           case 2:
             final getBloodGroup = getBloodGroupResponseFromJson(str);
             return getBloodGroup;
+          case 3:
+            final getRank = getRankResponseFromJson(str);
+            return getRank;
+          case 4:
+            final getServiceDetails = getServiceDetailsResponseFromJson(str);
+            return getServiceDetails;
+          case 5:
+            final getUnit = getUnitResponseFromJson(str);
+            return getUnit;
+          case 6:
+            final getBranch = getBranchResponseFromJson(str);
+            return getBranch;
+          case 7:
+            final getService = getServiceResponseFromJson(str);
+            return getService;
+          case 8:
+            final getMedicalCategory = getMedicalCategoryResponseFromJson(str);
+            return getMedicalCategory;
 
           default:
             log("Invalid request code: $requestCode");
