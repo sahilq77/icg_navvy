@@ -571,7 +571,7 @@ class _ScheduleAppointmentAmeScreenState
                                     selectedBranch.obs;
                                 String? branchCode = branchController
                                     .getBranchId(selectedBranch);
-                                unitController.selectedUnitVal = null;
+                                // unitController.selectedUnitVal = null;
                                 // unitController.unitList.clear();
 
                                 print(
@@ -580,8 +580,16 @@ class _ScheduleAppointmentAmeScreenState
                               }
                             },
                             selectedItem:
-                                branchController.selectedBranchVal?.value ??
-                                'Select Branch',
+                                branchController.getBranchNameById(
+                                  userController
+                                          .userProfileList
+                                          .first
+                                          .personnel
+                                          ?.branchCode ??
+                                      '',
+                                ) ??
+                                serviceController.selectedServiceVal?.value ??
+                                'Select Service',
                           ),
                         ),
                         SizedBox(height: 10),
@@ -947,15 +955,17 @@ class _ScheduleAppointmentAmeScreenState
                                 );
                               }
                             },
-                            selectedItem: medicalCategoryController
-                                .getMedicalNameById(
+                            selectedItem:
+                                medicalCategoryController.getMedicalNameById(
                                   userController
                                           .userProfileList
                                           .first
                                           .personnel
                                           ?.currentMedicalCategory ??
                                       '',
-                                ),
+                                ) ??
+                                serviceController.selectedServiceVal?.value ??
+                                'Select Medical Category',
                           ),
                         ),
                       ],
