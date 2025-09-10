@@ -45,7 +45,8 @@ class GenderController extends GetxController {
                 Networkutility.getServiceDetails +
                     "?personalNumber=${AppUtility.userID}&roleCode=undefined&genderYn=1&userTypeYn=1&commandYn=1&appointmentStatusYn=1&investigationStatusYn=1&miRoomYn=1&amaYn=1&medicalYn=1",
                 Get.context!,
-              ) as List<GetServiceDetailsResponse>?;
+              )
+              as List<GetServiceDetailsResponse>?;
 
       log(
         'Fetch Gender Response: ${response?.isNotEmpty == true ? response![0].toJson() : 'null'}',
@@ -55,7 +56,7 @@ class GenderController extends GetxController {
         if (response[0].status == "Success") {
           genderList.value = response[0].data!.first.gender as List<Gender>;
           log(
-            'Gender List Loaded: ${genderList.map((s) => "${s.genderCode}: ${s.genderName}").toList()}',
+            'Gender List Loaded: ${genderList.map((s) => "${s.genderName}: ${s.genderName}").toList()}',
           );
         } else {
           errorMessage.value = response[0].status.toString();
@@ -130,13 +131,13 @@ class GenderController extends GetxController {
             .firstWhereOrNull(
               (state) => state.genderName.toString() == genderName,
             )
-            ?.genderCode ??
+            ?.genderName ??
         '';
   }
 
   String? getGenderNameById(String genderId) {
     return genderList
-        .firstWhereOrNull((state) => state.genderCode == genderId)
+        .firstWhereOrNull((state) => state.genderName == genderId)
         ?.genderName
         .toString();
   }
