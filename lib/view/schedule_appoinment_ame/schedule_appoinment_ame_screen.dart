@@ -198,7 +198,7 @@ class _ScheduleAppointmentAmeScreenState
     rankController.fetchRank(context: context);
     bloodGroupController.fetchBloodGroups(context: context);
     commandController.fetchCommand(context: context);
-    allUnitController.fetchUnit(context: context);
+
     branchController.fetchBranches(context: context);
     serviceController.fetchService(context: context);
     medicalCategoryController.fetchMedicalCategory(context: context);
@@ -234,6 +234,12 @@ class _ScheduleAppointmentAmeScreenState
               userController.userProfileList.isEmpty) {
             return _buildShimmerScreen();
           }
+          unitController.fetchUnit(
+            context: context,
+            commandCode:
+                userController.userProfileList.first.personnel?.commandCode ??
+                '',
+          );
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -317,9 +323,6 @@ class _ScheduleAppointmentAmeScreenState
                                           print(
                                             'Selected Rank: $selectedRank, Code: $rankCode',
                                           );
-                                          controller.appointment.update((val) {
-                                            val?.rank = selectedRank;
-                                          });
                                         }
                                       },
                                       selectedItem:
@@ -392,9 +395,6 @@ class _ScheduleAppointmentAmeScreenState
                                 print(
                                   'Selected Blood Group: $selectedBloodGroup, Code: $bloodGroupCode',
                                 );
-                                controller.appointment.update((val) {
-                                  val?.bloodGroup = selectedBloodGroup;
-                                });
                               }
                             },
                             selectedItem:
@@ -461,9 +461,7 @@ class _ScheduleAppointmentAmeScreenState
                                     .getCommandId(selectedCommand);
                                 unitController.selectedUnitVal = null;
                                 unitController.unitList.clear();
-                                controller.appointment.update((val) {
-                                  val?.unit = '';
-                                });
+
                                 unitController.fetchUnit(
                                   context: context,
                                   commandCode: commandCode!,
@@ -471,9 +469,6 @@ class _ScheduleAppointmentAmeScreenState
                                 print(
                                   'Selected Command: $selectedCommand, Code: $commandCode',
                                 );
-                                controller.appointment.update((val) {
-                                  val?.command = selectedCommand;
-                                });
                               }
                             },
                             selectedItem:
@@ -525,9 +520,6 @@ class _ScheduleAppointmentAmeScreenState
                                 print(
                                   'Selected Unit: $selectedUnit, Code: $unitCode',
                                 );
-                                controller.appointment.update((val) {
-                                  val?.unit = selectedUnit;
-                                });
                               }
                             },
                             selectedItem:
@@ -579,17 +571,11 @@ class _ScheduleAppointmentAmeScreenState
                                 String? branchCode = branchController
                                     .getBranchId(selectedBranch);
                                 unitController.selectedUnitVal = null;
-                                unitController.unitList.clear();
-                                controller.appointment.update((val) {
-                                  val?.unit = '';
-                                  val?.armCorpsBranchTrade = selectedBranch;
-                                });
+                                // unitController.unitList.clear();
+
                                 print(
                                   'Selected Branch: $selectedBranch, Code: $branchCode',
                                 );
-                                controller.appointment.update((val) {
-                                  val?.armCorpsBranchTrade = selectedBranch;
-                                });
                               }
                             },
                             selectedItem:
@@ -636,9 +622,6 @@ class _ScheduleAppointmentAmeScreenState
                                 print(
                                   'Selected Gender: $selectedGender, Code: $genderCode',
                                 );
-                                controller.appointment.update((val) {
-                                  val?.gender = selectedGender;
-                                });
                               }
                             },
                             selectedItem:
@@ -692,9 +675,6 @@ class _ScheduleAppointmentAmeScreenState
                                 print(
                                   'Selected Service: $selectedService, Code: $serviceCode',
                                 );
-                                controller.appointment.update((val) {
-                                  val?.service = selectedService;
-                                });
                               }
                             },
                             selectedItem:
@@ -756,10 +736,14 @@ class _ScheduleAppointmentAmeScreenState
                                   _textFieldTitle("Date of Commission"),
                                   SizedBox(height: 5),
                                   TextFormField(
-                                    initialValue: controller
-                                        .appointment
-                                        .value
-                                        .dateOfCommission,
+                                    initialValue:
+                                        userController
+                                            .userProfileList
+                                            .first
+                                            .personnel
+                                            ?.dateOfCommissioning
+                                            .toString() ??
+                                        '',
                                     decoration: InputDecoration(filled: true),
                                     enabled: false,
                                   ),
@@ -808,9 +792,6 @@ class _ScheduleAppointmentAmeScreenState
                                 print(
                                   'Selected Unit: $selectedUnit, Code: $unitCode',
                                 );
-                                controller.appointment.update((val) {
-                                  val?.lastAmePmeLocation = selectedUnit;
-                                });
                               }
                             },
                             selectedItem:
@@ -829,8 +810,14 @@ class _ScheduleAppointmentAmeScreenState
                         _textFieldTitle("Last Examination date"),
                         SizedBox(height: 5),
                         TextFormField(
-                          initialValue:
-                              controller.appointment.value.lastExaminationDate,
+                          // initialValue:
+                          //     userController
+                          //         .userProfileList
+                          //         .first
+                          //         .personnel
+                          //         ?.
+                          //         .toString() ??
+                          //     '',
                           decoration: InputDecoration(filled: true),
                           enabled: false,
                         ),
@@ -880,8 +867,8 @@ class _ScheduleAppointmentAmeScreenState
                                   _textFieldTitle("W.E.F. Date"),
                                   SizedBox(height: 5),
                                   TextFormField(
-                                    initialValue:
-                                        controller.appointment.value.wefDate,
+                                    // initialValue:
+                                    //     controller.appointment.value.wefDate,
                                     decoration: InputDecoration(filled: true),
                                     enabled: false,
                                   ),
@@ -895,7 +882,12 @@ class _ScheduleAppointmentAmeScreenState
                         SizedBox(height: 5),
                         TextFormField(
                           initialValue:
-                              controller.appointment.value.pastMedicalHistory,
+                              userController
+                                  .userProfileList
+                                  .first
+                                  .personnel
+                                  ?.pastMedicalHistory ??
+                              '',
                           decoration: InputDecoration(filled: true),
                           enabled: false,
                         ),
@@ -942,10 +934,6 @@ class _ScheduleAppointmentAmeScreenState
                                 print(
                                   'Selected Medical Category: $selectedMedicalCategory, Code: $medicalCategoryCode',
                                 );
-                                controller.appointment.update((val) {
-                                  val?.presentMedicalCategory =
-                                      selectedMedicalCategory;
-                                });
                               }
                             },
                             selectedItem:

@@ -56,6 +56,7 @@ class UnitController extends GetxController {
 
       if (response != null && response.isNotEmpty) {
         if (response[0].status == "Success") {
+          unitList.clear();
           unitList.value = response[0].data!.first.unit as List<Unit>;
           log(
             'Unit List Loaded: ${unitList.map((s) => "${s.unitCode}: ${s.unitName}").toList()}',
