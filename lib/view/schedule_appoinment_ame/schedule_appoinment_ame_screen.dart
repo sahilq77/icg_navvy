@@ -13,6 +13,7 @@ import 'package:icg_navy/controller/user_details/user_details_controller.dart';
 import 'package:icg_navy/utility/app_colors.dart';
 import 'package:icg_navy/utility/app_images.dart';
 import 'package:icg_navy/utility/app_routes.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../controller/global_controller/command/commnand_controller.dart';
@@ -694,14 +695,15 @@ class _ScheduleAppointmentAmeScreenState
                         _textFieldTitle("Date of Birth"),
                         SizedBox(height: 5),
                         TextFormField(
-                          initialValue:
-                              userController
-                                  .userProfileList
-                                  .first
-                                  .personnel
-                                  ?.dateOfBirth
-                                  ?.toString() ??
-                              '',
+                          initialValue: formatDate(
+                            userController
+                                    .userProfileList
+                                    .first
+                                    .personnel
+                                    ?.dateOfBirth
+                                    ?.toString() ??
+                                '',
+                          ),
                           decoration: InputDecoration(filled: true),
                           enabled: false,
                         ),
@@ -736,14 +738,15 @@ class _ScheduleAppointmentAmeScreenState
                                   _textFieldTitle("Date of Commission"),
                                   SizedBox(height: 5),
                                   TextFormField(
-                                    initialValue:
-                                        userController
-                                            .userProfileList
-                                            .first
-                                            .personnel
-                                            ?.dateOfCommissioning
-                                            .toString() ??
-                                        '',
+                                    initialValue: formatDate(
+                                      userController
+                                              .userProfileList
+                                              .first
+                                              .personnel
+                                              ?.dateOfCommissioning
+                                              .toString() ??
+                                          '',
+                                    ),
                                     decoration: InputDecoration(filled: true),
                                     enabled: false,
                                   ),
@@ -810,14 +813,15 @@ class _ScheduleAppointmentAmeScreenState
                         _textFieldTitle("Last Examination date"),
                         SizedBox(height: 5),
                         TextFormField(
-                          // initialValue:
-                          //     userController
-                          //         .userProfileList
-                          //         .first
-                          //         .personnel
-                          //         ?.
-                          //         .toString() ??
-                          //     '',
+                          initialValue: formatDate(
+                            userController
+                                    .userProfileList
+                                    .first
+                                    .personnel
+                                    ?.lastInvestigationDate
+                                    .toString() ??
+                                '',
+                          ),
                           decoration: InputDecoration(filled: true),
                           enabled: false,
                         ),
@@ -867,8 +871,15 @@ class _ScheduleAppointmentAmeScreenState
                                   _textFieldTitle("W.E.F. Date"),
                                   SizedBox(height: 5),
                                   TextFormField(
-                                    // initialValue:
-                                    //     controller.appointment.value.wefDate,
+                                    initialValue: formatDate(
+                                      userController
+                                              .userProfileList
+                                              .first
+                                              .personnel
+                                              ?.medicalCategoryWithEffectFrom
+                                              .toString() ??
+                                          '',
+                                    ),
                                     decoration: InputDecoration(filled: true),
                                     enabled: false,
                                   ),
@@ -936,11 +947,15 @@ class _ScheduleAppointmentAmeScreenState
                                 );
                               }
                             },
-                            selectedItem:
-                                medicalCategoryController
-                                    .selectedMedicalVal
-                                    ?.value ??
-                                'Select Medical Category',
+                            selectedItem: medicalCategoryController
+                                .getMedicalNameById(
+                                  userController
+                                          .userProfileList
+                                          .first
+                                          .personnel
+                                          ?.currentMedicalCategory ??
+                                      '',
+                                ),
                           ),
                         ),
                       ],
@@ -1277,6 +1292,12 @@ class _ScheduleAppointmentAmeScreenState
         bottomNavigationBar: CustomBottomBar(),
       ),
     );
+  }
+
+  String formatDate(String inputDate) {
+    DateTime dateTime = DateTime.parse(inputDate);
+    DateFormat formatter = DateFormat('dd/MM/yyyy');
+    return formatter.format(dateTime);
   }
 
   Widget _buildShimmerScreen() {
