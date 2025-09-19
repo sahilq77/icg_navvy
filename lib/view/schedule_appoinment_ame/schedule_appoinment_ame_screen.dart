@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../controller/global_controller/command/commnand_controller.dart';
+import '../../controller/global_controller/financial_year/financial_year_controller.dart';
 import '../../controller/global_controller/gender/gender_controller.dart';
 import '../../controller/global_controller/medical_category/medical_category_controller.dart';
 import '../../controller/global_controller/service/service_controller.dart';
@@ -190,6 +191,7 @@ class _ScheduleAppointmentAmeScreenState
   final branchController = Get.put(BranchController());
   final serviceController = Get.put(ServiceController());
   final medicalCategoryController = Get.put(MedicalCategoryController());
+  final financialYearController = Get.put(FinancialYearController());
 
   @override
   void initState() {
@@ -986,29 +988,68 @@ class _ScheduleAppointmentAmeScreenState
                         SizedBox(height: 10),
                         _textFieldTitle("Year Of AME/PME*"),
                         SizedBox(height: 5),
-                        DropdownSearch<String>(
-                          popupProps: PopupProps.menu(
-                            showSearchBox: true,
-                            searchFieldProps: TextFieldProps(
-                              decoration: InputDecoration(
-                                hintText: "Search year...",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                        _buildShimmerDropdown(
+                          isLoading: financialYearController.isLoading.value,
+                          child: DropdownSearch<String>(
+                            popupProps: const PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  labelText: 'Search Financial Year',
+                                  border: OutlineInputBorder(),
                                 ),
                               ),
                             ),
-                          ),
-                          items: ['Select Appointment Year', '2025', '2026'],
-                          dropdownDecoratorProps: DropDownDecoratorProps(
-                            dropdownSearchDecoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            items: financialYearController
+                                .getFinancialYearNames(),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: "Select Appointment Year",
+                                border: const OutlineInputBorder(),
+                                errorText:
+                                    financialYearController
+                                        .errorMessage
+                                        .value
+                                        .isNotEmpty
+                                    ? financialYearController.errorMessage.value
+                                    : null,
                               ),
                             ),
+                            onChanged: (String? selectedFinancialYear) {
+                              if (selectedFinancialYear != null) {
+                                financialYearController
+                                    .updateSelectedFinancialYear(
+                                      selectedFinancialYear,
+                                    );
+                                controller.updateAppointmentYear(
+                                  selectedFinancialYear,
+                                );
+                                String? financialYearId =
+                                    financialYearController.getFinancialYearId(
+                                      selectedFinancialYear,
+                                    );
+                                print(
+                                  'Selected Financial Year: $selectedFinancialYear, ID: $financialYearId',
+                                );
+                              }
+                            },
+                            selectedItem:
+                                controller.appointment.value.appointmentYear ==
+                                    "Select Appointment Year"
+                                ? "Select Appointment Year"
+                                : financialYearController
+                                          .getFinancialYearNameById(
+                                            controller
+                                                .appointment
+                                                .value
+                                                .appointmentYear,
+                                          ) ??
+                                      financialYearController
+                                          .selectedFinancialYearVal
+                                          ?.value ??
+                                      "Select Appointment Year",
                           ),
-                          onChanged: controller.updateAppointmentYear,
-                          selectedItem:
-                              controller.appointment.value.appointmentYear,
                         ),
                         SizedBox(height: 10),
                         _textFieldTitle("Preferred Date"),

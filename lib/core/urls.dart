@@ -16,7 +16,11 @@ class Networkutility {
   static int getBranchApi = 6;
   static String getService = "${baseUrl + "v1/idName?serviceTypeYn=1"}";
   static int getServiceApi = 7;
-static String getMedicalCategory = "${baseUrl2 + "v1/idName/filter?dataKey=MEDCAT"}";
+  static String getMedicalCategory =
+      "${baseUrl2 + "v1/idName/filter?dataKey=MEDCAT"}";
   static int getMedicalCategoryApi = 8;
-  
+  static String getFinancialYear = "${baseUrl + "financial/year/v1"}";
+  static int getFinancialYearApi = 9;
+  static String loginUsingOtp = "${baseUrl + "appointment/otp/genrate/v1"}";
+  static int loginUsingOtpApi = 10;
 }

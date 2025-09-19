@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:icg_navy/core/network/exceptions.dart';
 import '../../model/global_model/blood_group/get_blood_group_response.dart';
 import '../../model/global_model/branch/get_branch_response.dart';
+import '../../model/global_model/financial_year/get_financial_year_response.dart';
 import '../../model/global_model/medical_category/get_medical_category_response.dart';
 import '../../model/global_model/rank/get_rank_response.dart';
 import '../../model/global_model/service/get_service_response.dart';
@@ -289,6 +290,9 @@ class Networkcall {
           case 8:
             final getMedicalCategory = getMedicalCategoryResponseFromJson(str);
             return getMedicalCategory;
+          case 9:
+            final getFinancialYear = getFinancialYearResponseFromJson(str);
+            return getFinancialYear;
 
           default:
             log("Invalid request code: $requestCode");
@@ -330,17 +334,19 @@ class Networkcall {
   }
 
   Future<void> _navigateToNoInternet() async {
-    if (!_isNavigatingToNoInternet &&
-        Get.currentRoute != AppRoutes.noInternet) {
+    if (Get.currentRoute != AppRoutes.noInternet &&
+        !_isNavigatingToNoInternet) {
       _isNavigatingToNoInternet = true;
-      // Double-check connectivity before navigating
-      final isConnected = await _connectivityService.checkConnectivity();
-      if (!isConnected) {
+      try {
+        // Navigate to No Internet screen
         await Get.offNamed(AppRoutes.noInternet);
+      } catch (e) {
+        log("Navigation to No Internet screen failed: $e");
+      } finally {
+        // Reset flag after a short delay to prevent rapid re-navigation
+        await Future.delayed(const Duration(milliseconds: 500));
+        _isNavigatingToNoInternet = false;
       }
-      // Reset flag after a delay
-      await Future.delayed(const Duration(milliseconds: 500));
-      _isNavigatingToNoInternet = false;
     }
   }
 

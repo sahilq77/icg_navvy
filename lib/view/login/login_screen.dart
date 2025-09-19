@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:icg_navy/controller/otp/send_and_verify_otp_controller.dart';
 import 'package:icg_navy/utility/app_utility.dart';
 import '../../controller/login/login_controller.dart';
 import '../../utility/app_colors.dart';
@@ -16,9 +17,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final controller = Get.put(LoginController());
+  final controller = Get.put(SendAndVerifyOtpController());
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
+  final _mobileController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   static const Map<String, String> _emailToRole = {
@@ -130,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontSize: 14,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
                       TextFormField(
                         controller: _usernameController,
                         decoration: const InputDecoration(
@@ -148,7 +150,39 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      Text(
+                        "Mobile Number",
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.defaultblack,
+                          fontSize: 14,
+                        ),
+                      ),
 
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _mobileController,
+                        decoration: const InputDecoration(
+                          hintText: "Enter mobile number",
+                        ),
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(
+                            9,
+                          ), // Adjust based on country phone number length
+                        ],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your mobile number';
+                          }
+                          if (value.length < 9) {
+                            return 'Mobile number must be 10 digits';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
                       // Text(
                       //   "Password",
                       //   style: GoogleFonts.inter(
@@ -216,12 +250,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            controller.login(
+                            // Get.toNamed(AppRoutes.verifyOtp);
+                            controller.sendOTP(
                               context: context,
                               username: _usernameController.text.toString(),
-                              // mobile: _phoneController.text,
-                              // password: _passwordController.text,
+                              mobileNumber: _mobileController.text.toString(),
                             );
+                            // controller.login(
+                            //   context: context,
+                            //   username: _usernameController.text.toString(),
+                            //   // mobile: _phoneController.text,
+                            //   // password: _passwordController.text,
+                            // );
                             //  handleLogin();
                             // _phoneController.clear();
                             // _passwordController.clear();

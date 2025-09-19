@@ -126,7 +126,7 @@ class LogoutScreen extends StatelessWidget {
                             // );
                             // Optionally navigate to a confirmation screen or home
                             await AppUtility.clearUserInfo();
-                            Get.offNamed(AppRoutes.login);
+                            Get.offAllNamed(AppRoutes.login);
                             Get.snackbar(
                               'Success',
                               'Logout Successfully!',

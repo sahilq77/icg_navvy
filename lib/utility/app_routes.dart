@@ -15,6 +15,7 @@ import '../view/medical_officer/pending_appoinments/pending_appoinment_medical_s
 import '../view/medical_officer/processed_appoinments/proceessed_appoinmet_medical_screen.dart';
 import '../view/my_report/my_report_screen.dart';
 import '../view/notification/notification_screen.dart';
+import '../view/otp/otp_verify_screen.dart';
 import '../view/schedule_appoinment/schedule_appoinment_screen.dart';
 import '../view/schedule_appoinment/token/token_screen.dart';
 import '../view/schedule_appoinment_ame/confirmation_screen.dart';
@@ -53,7 +54,7 @@ class AppRoutes {
   static const String approvedAppoinmentAuth = '/approved-appoinmet-auth';
 
   static const String logout = '/log-out';
-  static const String packedbyoutward = '/packedby_outward';
+  static const String verifyOtp = '/verify-otp';
   static const String packedbyoutwarddetail = '/packedby_outward_detail';
   static const String stockmovement = '/stock_movement';
   static const String outwardmovement = '/outward_movement_form';
@@ -177,11 +178,15 @@ class AppRoutes {
       page: () => AprrovedAppoinmentAuthScreen(),
       transition: Transition.fadeIn,
     ),
- GetPage(
+    GetPage(
       name: logout,
       page: () => LogoutScreen(),
       transition: Transition.fadeIn,
     ),
-    
+    GetPage(
+      name: verifyOtp,
+      page: () => OtpVerificationScreen(),
+      transition: Transition.fadeIn,
+    ),
   ];
 }
