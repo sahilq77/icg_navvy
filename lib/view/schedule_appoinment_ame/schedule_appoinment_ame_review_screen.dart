@@ -9,14 +9,12 @@ import 'package:icg_navy/utility/app_routes.dart';
 import 'package:icg_navy/view/schedule_appoinment_ame/schedule_appoinment_ame_screen.dart'
     show ScheduleAppointmentController;
 
-// Assuming AppointmentModel and ScheduleAppointmentController are the same as provided
-// Import the same AppointmentModel and ScheduleAppointmentController from your code
-// (I've included them in the reference but won't repeat here for brevity)
+import '../../controller/schedule_ame/schedule_appinment_controller.dart';
 
 class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ScheduleAppointmentController>();
+    final controller = Get.put(ScheduleAppointmentController());
 
     return Scaffold(
       appBar: AppBar(
@@ -35,14 +33,9 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
         ),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(0),
-          child: Divider(
-            color: const Color(0xFFDADADA),
-            // thickness: 2,
-            height: 0,
-          ),
+          child: Divider(color: const Color(0xFFDADADA), height: 0),
         ),
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Obx(
@@ -93,7 +86,6 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
                         "Gender",
                         controller.appointment.value.gender,
                       ),
-                      SizedBox(width: 10),
                       _reviewField(
                         "Service",
                         controller.appointment.value.service,
@@ -106,7 +98,6 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
                         "Total Service",
                         controller.appointment.value.totalService,
                       ),
-                      SizedBox(width: 10),
                       _reviewField(
                         "Date of Commission",
                         controller.appointment.value.dateOfCommission,
@@ -137,7 +128,6 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
                         "W.E.F. Date",
                         controller.appointment.value.wefDate,
                       ),
-
                       _reviewField(
                         "Past Medical History",
                         controller.appointment.value.pastMedicalHistory,
@@ -205,7 +195,8 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
                                   children: [
                                     Icon(Icons.file_copy, color: Colors.grey),
                                     Text(
-                                      " 74644545465465.pdf",
+                                      controller.selectedFile.value?.name ??
+                                          'No file uploaded',
                                       style: GoogleFonts.inter(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
@@ -223,7 +214,6 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
               SizedBox(height: 15),
               Card(
                 child: Padding(
@@ -306,12 +296,8 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        side: BorderSide(
-                          color: Colors.grey[300]!, // Border color
-                          width: 1.5, // Border width
-                        ),
-                        foregroundColor:
-                            AppColors.defaultblack, // Text/icon color
+                        side: BorderSide(color: Colors.grey[300]!, width: 1.5),
+                        foregroundColor: AppColors.defaultblack,
                       ),
                       child: Text(
                         'Go Back & Edit',
@@ -327,13 +313,12 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Final submission logic
-                        Get.toNamed(AppRoutes.confirmtionScreen);
+                        // Get.toNamed(AppRoutes.confirmationScreen); // Fixed typo
                         Get.snackbar(
                           "Success",
                           "Application successfully submitted!",
+                          snackPosition: SnackPosition.BOTTOM,
                         );
-                        // Optionally navigate to a confirmation screen or home
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(double.infinity, 50),
@@ -380,7 +365,7 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _reviewField(String title, String value) {
+  Widget _reviewField(String title, String? value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Column(
@@ -396,7 +381,7 @@ class ScheduleAppointmentAmeReviewScreen extends StatelessWidget {
           ),
           SizedBox(height: 5),
           Text(
-            value,
+            value ?? 'N/A',
             style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: FontWeight.w500,

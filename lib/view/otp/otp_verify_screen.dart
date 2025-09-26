@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:icg_navy/controller/otp/send_and_verify_otp_controller.dart';
 import '../../utility/app_colors.dart';
 import '../../utility/app_images.dart';
 import '../../utility/app_routes.dart';
@@ -16,7 +17,7 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  final controller = Get.find<LoginController>();
+  final controller = Get.put(SendAndVerifyOtpController());
   final _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _otpControllers = List.generate(
     6,

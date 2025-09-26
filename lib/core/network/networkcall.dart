@@ -20,6 +20,7 @@ import '../../model/inward_list/get_view_notes_response.dart';
 import '../../model/login/get_login_response.dart';
 import '../../model/inward_list/get_inward_list_response.dart';
 
+import '../../model/schedule_due_date/get_schedule_due_date_response.dart';
 import '../../utility/app_routes.dart';
 import '../../utility/customdesign/connctivityservice.dart';
 
@@ -293,6 +294,9 @@ class Networkcall {
           case 9:
             final getFinancialYear = getFinancialYearResponseFromJson(str);
             return getFinancialYear;
+          case 12:
+            final getdueDate = getDueDateResponseFromJson(str);
+            return getdueDate;
 
           default:
             log("Invalid request code: $requestCode");

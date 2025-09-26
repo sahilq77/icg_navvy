@@ -15,161 +15,16 @@ import 'package:icg_navy/utility/app_images.dart';
 import 'package:icg_navy/utility/app_routes.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
-
+import 'package:file_picker/file_picker.dart';
 import '../../controller/global_controller/command/commnand_controller.dart';
 import '../../controller/global_controller/financial_year/financial_year_controller.dart';
 import '../../controller/global_controller/gender/gender_controller.dart';
 import '../../controller/global_controller/medical_category/medical_category_controller.dart';
 import '../../controller/global_controller/service/service_controller.dart';
 import '../../controller/global_controller/unit/unit_controller.dart';
+import '../../controller/schedule_ame/schedule_appinment_controller.dart';
+import '../../controller/schedule_ame/schedule_due_date_controller.dart';
 import '../bottomnavigation/bottomnavigation.dart';
-
-class AppointmentModel {
-  String personalNumber;
-  String rank;
-  String name;
-  String bloodGroup;
-  String command;
-  String unit;
-  String armCorpsBranchTrade;
-  String gender;
-  String service;
-  String dateOfBirth;
-  String totalService;
-  String dateOfCommission;
-  String lastAmePmeLocation;
-  String lastExaminationDate;
-  String age;
-  String wefDate;
-  String pastMedicalHistory;
-  String presentMedicalCategory;
-  String appointmentYear;
-  String preferredDate;
-  String scheduledDueDate;
-  String mobileNumber;
-  bool diver;
-  bool submariner;
-  bool marco;
-  bool aviator;
-  bool noneOfAbove;
-  bool declarationAgreed;
-
-  AppointmentModel({
-    this.personalNumber = "ICGC12345",
-    this.rank = "NVK(P)",
-    this.name = "Sandeep Kumar",
-    this.bloodGroup = "B+",
-    this.command = "Coast Guard Headquarters",
-    this.unit = "Dte. Information Technology",
-    this.armCorpsBranchTrade = "General Duty",
-    this.gender = "Male",
-    this.service = "Coast Guard",
-    this.dateOfBirth = "24/08/2025",
-    this.totalService = "15 Years 6 Months",
-    this.dateOfCommission = "20/09/2025",
-    this.lastAmePmeLocation = "CGHQ New Delhi",
-    this.lastExaminationDate = "24/08/2025",
-    this.age = "35 Years 5 Months",
-    this.wefDate = "05/10/2025",
-    this.pastMedicalHistory = "Fit",
-    this.presentMedicalCategory = "S1A1",
-    this.appointmentYear = "Select Appointment Year",
-    this.preferredDate = "24/08/2025",
-    this.scheduledDueDate = "24/08/2025",
-    this.mobileNumber = "+91 123454654",
-    this.diver = false,
-    this.submariner = false,
-    this.marco = false,
-    this.aviator = false,
-    this.noneOfAbove = true,
-    this.declarationAgreed = false,
-  });
-}
-
-class ScheduleAppointmentController extends GetxController {
-  var appointment = AppointmentModel().obs;
-
-  void updateAppointmentYear(String? year) {
-    if (year != null) {
-      appointment.update((val) {
-        val?.appointmentYear = year;
-      });
-    }
-  }
-
-  void updatePreferredDate(String date) {
-    appointment.update((val) {
-      val?.preferredDate = date;
-    });
-  }
-
-  void updateScheduledDueDate(String date) {
-    appointment.update((val) {
-      val?.scheduledDueDate = date;
-    });
-  }
-
-  void updateSpecialCategory({
-    bool? diver,
-    bool? submariner,
-    bool? marco,
-    bool? aviator,
-    bool? noneOfAbove,
-  }) {
-    appointment.update((val) {
-      if (diver != null) val?.diver = diver;
-      if (submariner != null) val?.submariner = submariner;
-      if (marco != null) val?.marco = marco;
-      if (aviator != null) val?.aviator = aviator;
-      if (noneOfAbove != null) {
-        val?.noneOfAbove = noneOfAbove;
-        if (noneOfAbove) {
-          val?.diver = false;
-          val?.submariner = false;
-          val?.marco = false;
-          val?.aviator = false;
-        }
-      }
-    });
-  }
-
-  void updateDeclarationAgreed(bool value) {
-    appointment.update((val) {
-      val?.declarationAgreed = value;
-    });
-  }
-
-  Future<void> selectDate(BuildContext context, bool isPreferredDate) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2025),
-      lastDate: DateTime(2030),
-    );
-    if (picked != null) {
-      String formattedDate =
-          "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
-      if (isPreferredDate) {
-        updatePreferredDate(formattedDate);
-      } else {
-        updateScheduledDueDate(formattedDate);
-      }
-    }
-  }
-
-  void reviewApplication() {
-    if (appointment.value.declarationAgreed &&
-        appointment.value.appointmentYear != "Select Appointment Year") {
-      Get.toNamed(AppRoutes.scheduleAppinmentAMEReview);
-      Get.snackbar("Success", "Application submitted for review!");
-    } else {
-      Get.snackbar(
-        "Error",
-        "Please agree to the declaration and select a valid appointment year.",
-      );
-    }
-  }
-}
 
 class ScheduleAppointmentAmeScreen extends StatefulWidget {
   @override
@@ -192,6 +47,7 @@ class _ScheduleAppointmentAmeScreenState
   final serviceController = Get.put(ServiceController());
   final medicalCategoryController = Get.put(MedicalCategoryController());
   final financialYearController = Get.put(FinancialYearController());
+  final scheduleDueDateController = Get.put(ScheduleDueDateController());
 
   @override
   void initState() {
@@ -201,7 +57,6 @@ class _ScheduleAppointmentAmeScreenState
     rankController.fetchRank(context: context);
     bloodGroupController.fetchBloodGroups(context: context);
     commandController.fetchCommand(context: context);
-
     branchController.fetchBranches(context: context);
     serviceController.fetchService(context: context);
     medicalCategoryController.fetchMedicalCategory(context: context);
@@ -464,7 +319,6 @@ class _ScheduleAppointmentAmeScreenState
                                     .getCommandId(selectedCommand);
                                 unitController.selectedUnitVal = null;
                                 unitController.unitList.clear();
-
                                 unitController.fetchUnit(
                                   context: context,
                                   commandCode: commandCode!,
@@ -573,9 +427,6 @@ class _ScheduleAppointmentAmeScreenState
                                     selectedBranch.obs;
                                 String? branchCode = branchController
                                     .getBranchId(selectedBranch);
-                                // unitController.selectedUnitVal = null;
-                                // unitController.unitList.clear();
-
                                 print(
                                   'Selected Branch: $selectedBranch, Code: $branchCode',
                                 );
@@ -1016,15 +867,12 @@ class _ScheduleAppointmentAmeScreenState
                                     : null,
                               ),
                             ),
-                            onChanged: (String? selectedFinancialYear) {
+                            onChanged: (String? selectedFinancialYear) async {
                               if (selectedFinancialYear != null) {
                                 financialYearController
                                     .updateSelectedFinancialYear(
                                       selectedFinancialYear,
                                     );
-                                controller.updateAppointmentYear(
-                                  selectedFinancialYear,
-                                );
                                 String? financialYearId =
                                     financialYearController.getFinancialYearId(
                                       selectedFinancialYear,
@@ -1032,58 +880,170 @@ class _ScheduleAppointmentAmeScreenState
                                 print(
                                   'Selected Financial Year: $selectedFinancialYear, ID: $financialYearId',
                                 );
+
+                                // Fetch due date based on selected year and rank
+                                String rankCode =
+                                    rankController.getRankId(
+                                      rankController.selectedRankVal?.value ??
+                                          userController
+                                              .userProfileList
+                                              .first
+                                              .personnel
+                                              ?.rankCode ??
+                                          '',
+                                    ) ??
+                                    '';
+                                if (rankCode.isNotEmpty &&
+                                    financialYearId != null) {
+                                  await scheduleDueDateController.getDueDate(
+                                    context: context,
+                                    rankCode: rankCode,
+                                    ameYear: selectedFinancialYear,
+                                  );
+                                  // Update the scheduled due date in the controller
+                                  if (scheduleDueDateController
+                                      .dueDateData
+                                      .isNotEmpty) {
+                                    DateTime? dueDate =
+                                        scheduleDueDateController
+                                            .dueDateData
+                                            .first
+                                            .scheduledDueDate;
+                                    if (dueDate != null) {
+                                      controller.updateScheduledDueDate(
+                                        dueDate,
+                                      );
+                                    }
+                                  }
+                                }
                               }
                             },
-                            selectedItem:
-                                controller.appointment.value.appointmentYear ==
-                                    "Select Appointment Year"
-                                ? "Select Appointment Year"
-                                : financialYearController
-                                          .getFinancialYearNameById(
-                                            controller
-                                                .appointment
-                                                .value
-                                                .appointmentYear,
-                                          ) ??
-                                      financialYearController
-                                          .selectedFinancialYearVal
-                                          ?.value ??
-                                      "Select Appointment Year",
+                            selectedItem: financialYearController
+                                .selectedFinancialYearVal
+                                ?.value,
                           ),
                         ),
                         SizedBox(height: 10),
                         _textFieldTitle("Preferred Date"),
                         SizedBox(height: 5),
-                        TextFormField(
-                          controller: TextEditingController(
-                            text: controller.appointment.value.preferredDate,
-                          ),
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.calendar_today),
-                          ),
-                          readOnly: true,
-                          onTap: () => controller.selectDate(context, true),
-                        ),
+                        Obx(() {
+                          return TextFormField(
+                            controller: TextEditingController(
+                              text: controller.preferredDate.value != null
+                                  ? DateFormat(
+                                      'dd/MM/yyyy',
+                                    ).format(controller.preferredDate.value!)
+                                  : '',
+                            ),
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.calendar_today),
+                              border: OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                            ),
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(2100),
+                              );
+                              if (pickedDate != null) {
+                                controller.updatePreferredDate(pickedDate);
+                              }
+                            },
+                          );
+                        }),
                         SizedBox(height: 10),
                         _textFieldTitle("Scheduled Due Date"),
                         SizedBox(height: 5),
-                        TextFormField(
-                          controller: TextEditingController(
-                            text: controller.appointment.value.scheduledDueDate,
-                          ),
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.calendar_today),
-                          ),
-                          readOnly: true,
-                          onTap: () => controller.selectDate(context, false),
-                        ),
+                        Obx(() {
+                          // Check if due date is loading
+                          if (scheduleDueDateController.isLoading.value) {
+                            return _buildShimmerField();
+                          }
+                          // Check for error
+                          if (scheduleDueDateController
+                              .errorMessage
+                              .value
+                              .isNotEmpty) {
+                            return TextFormField(
+                              controller: TextEditingController(
+                                text: 'Error loading due date',
+                              ),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                errorText: scheduleDueDateController
+                                    .errorMessage
+                                    .value,
+                              ),
+                              readOnly: true,
+                            );
+                          }
+                          // Display the due date
+                          return TextFormField(
+                            controller: TextEditingController(
+                              text: controller.scheduledDueDate.value != null
+                                  ? DateFormat(
+                                      'dd/MM/yyyy',
+                                    ).format(controller.scheduledDueDate.value!)
+                                  : scheduleDueDateController
+                                            .dueDateData
+                                            .isNotEmpty &&
+                                        scheduleDueDateController
+                                                .dueDateData
+                                                .first
+                                                .scheduledDueDate !=
+                                            null
+                                  ? DateFormat('dd/MM/yyyy').format(
+                                      scheduleDueDateController
+                                          .dueDateData
+                                          .first
+                                          .scheduledDueDate!,
+                                    )
+                                  : '',
+                            ),
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(Icons.calendar_today),
+                              border: OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                            ),
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate:
+                                    controller.scheduledDueDate.value ??
+                                    DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(2100),
+                              );
+                              if (pickedDate != null) {
+                                controller.updateScheduledDueDate(pickedDate);
+                              }
+                            },
+                          );
+                        }),
                         SizedBox(height: 10),
                         _textFieldTitle("Mobile Number"),
                         SizedBox(height: 5),
                         TextFormField(
                           initialValue:
-                              controller.appointment.value.mobileNumber,
-                          decoration: InputDecoration(),
+                              userController
+                                  .userProfileList
+                                  .first
+                                  .personnel
+                                  ?.personalMobileNumber ??
+                              '',
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
                           enabled: false,
                         ),
                       ],
@@ -1091,6 +1051,7 @@ class _ScheduleAppointmentAmeScreenState
                   ),
                 ),
                 SizedBox(height: 15),
+                // Inside the build method of _ScheduleAppointmentAmeScreenState, replace the Document Upload Card
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -1099,49 +1060,111 @@ class _ScheduleAppointmentAmeScreenState
                       children: [
                         _sectionTitle(
                           AppImages.uploadArrowIcon,
-                          "Document Upload",
+                          "Document Upload${controller.isDocumentUploadMandatory ? ' *' : ''}",
                         ),
                         SizedBox(height: 10),
-                        DottedBorder(
-                          borderType: BorderType.RRect,
-                          radius: Radius.circular(8),
-                          color: Colors.grey,
-                          strokeWidth: 1.0,
-                          dashPattern: [4, 4],
-                          child: Container(
-                            height: 100,
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(AppImages.uploadSkyIcon),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    "Upload Condonation Document",
-                                    style: GoogleFonts.inter(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey,
+                        Obx(() {
+                          return DottedBorder(
+                            borderType: BorderType.RRect,
+                            radius: Radius.circular(8),
+                            color:
+                                controller.isDocumentUploadMandatory &&
+                                    controller.selectedFile.value == null
+                                ? Colors.red
+                                : Colors.grey,
+                            strokeWidth: 1.0,
+                            dashPattern: [4, 4],
+                            child: InkWell(
+                              onTap: () async {
+                                FilePickerResult? result = await FilePicker
+                                    .platform
+                                    .pickFiles(
+                                      type: FileType.custom,
+                                      allowedExtensions: [
+                                        'pdf',
+                                        'doc',
+                                        'docx',
+                                        'jpeg',
+                                        'png',
+                                      ],
+                                      allowMultiple: false,
+                                    );
+                                if (result != null && result.files.isNotEmpty) {
+                                  controller.updateSelectedFile(
+                                    result.files.single,
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'File selected: ${result.files.single.name}',
+                                      ),
                                     ),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                height: 100,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(AppImages.uploadSkyIcon),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        controller.selectedFile.value != null
+                                            ? controller
+                                                  .selectedFile
+                                                  .value!
+                                                  .name
+                                            : controller
+                                                  .isDocumentUploadMandatory
+                                            ? "Upload Mandatory Condonation Document"
+                                            : "Upload Condonation Document (Optional)",
+                                        style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color:
+                                              controller.selectedFile.value !=
+                                                  null
+                                              ? AppColors.defaultblack
+                                              : Colors.grey,
+                                        ),
+                                      ),
+                                      if (controller.selectedFile.value ==
+                                          null) ...[
+                                        SizedBox(height: 5),
+                                        Text(
+                                          "Drag & drop files here or click to browse",
+                                          style: GoogleFonts.inter(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
                                   ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    "Drag & drop files here or click to browse",
-                                    style: GoogleFonts.inter(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
+                          );
+                        }),
+                        if (controller.isDocumentUploadMandatory &&
+                            controller.selectedFile.value == null) ...[
+                          SizedBox(height: 5),
+                          Text(
+                            "Document upload is mandatory when the preferred date is after the scheduled due date.",
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: Colors.red,
+                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),
                 ),
+
                 SizedBox(height: 15),
                 Card(
                   child: Padding(
@@ -1158,7 +1181,7 @@ class _ScheduleAppointmentAmeScreenState
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Text(
-                            "I hereby declare that the information provided above is true and correct to the best of my knowledge. I understand that any false information may result in disciplinary action.",
+                            "I declare that I am not under any medication without the knowledge of Authorised Medical Attendant.",
                             style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -1167,27 +1190,32 @@ class _ScheduleAppointmentAmeScreenState
                           ),
                         ),
                         SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: controller
-                                  .appointment
-                                  .value
-                                  .declarationAgreed,
-                              onChanged: (value) => controller
-                                  .updateDeclarationAgreed(value ?? false),
-                            ),
-                            Expanded(
-                              child: Text(
-                                "I agree to the terms and conditions stated in the declaration above.",
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.defaultblack,
+                        Obx(
+                          () => Row(
+                            children: [
+                              Checkbox(
+                                value: controller
+                                    .appointment
+                                    .value
+                                    .declarationAgreed,
+                                onChanged: (value) {
+                                  controller.updateDeclarationAgreed(
+                                    value ?? false,
+                                  );
+                                },
+                              ),
+                              Expanded(
+                                child: Text(
+                                  "I agree to the terms and conditions stated in the declaration above.",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.defaultblack,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -1346,6 +1374,7 @@ class _ScheduleAppointmentAmeScreenState
   }
 
   String formatDate(String inputDate) {
+    if (inputDate.isEmpty) return '';
     DateTime dateTime = DateTime.parse(inputDate);
     DateFormat formatter = DateFormat('dd/MM/yyyy');
     return formatter.format(dateTime);
