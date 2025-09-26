@@ -1,4 +1,4 @@
-import 'dart:async'; // Add this import for Timer
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -7,7 +7,6 @@ import 'package:icg_navy/controller/otp/send_and_verify_otp_controller.dart';
 import '../../utility/app_colors.dart';
 import '../../utility/app_images.dart';
 import '../../utility/app_routes.dart';
-import '../../controller/login/login_controller.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({super.key});
@@ -17,7 +16,7 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  final controller = Get.put(SendAndVerifyOtpController());
+  final controller = Get.find<SendAndVerifyOtpController>();
   final _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _otpControllers = List.generate(
     6,
@@ -26,19 +25,18 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   bool _isResendEnabled = false;
   int _resendTimer = 30;
-  Timer? _timer; // Timer for countdown
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    // Start the resend OTP timer
     _startResendTimer();
   }
 
   void _startResendTimer() {
     _isResendEnabled = false;
     _resendTimer = 30;
-    _timer?.cancel(); // Cancel any existing timer
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_resendTimer > 0) {
         setState(() {
@@ -47,7 +45,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       } else {
         setState(() {
           _isResendEnabled = true;
-          timer.cancel(); // Stop the timer when it reaches 0
+          timer.cancel();
         });
       }
     });
@@ -55,7 +53,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancel the timer when disposing
+    _timer?.cancel();
     for (var controller in _otpControllers) {
       controller.dispose();
     }
@@ -68,40 +66,48 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   Future<void> handleOtpVerification() async {
     if (_formKey.currentState!.validate()) {
       final otp = _otpControllers.map((controller) => controller.text).join();
-      if (otp.length == 6) {
-        Get.snackbar(
-          'Success',
-          'OTP Verified Successfully!',
-          backgroundColor: AppColors.success,
-          colorText: Colors.white,
-        );
-        Get.offNamed(AppRoutes.home);
-      } else {
-        Get.snackbar(
-          'Error',
-          'Invalid OTP. Please try again.',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
-      for (var controller in _otpControllers) {
-        controller.clear();
-      }
+      final args = Get.arguments;
+      final username = args['username'] as String?;
+      final mobileNumber = args['mobileNumber'] as String?;
+
+      await controller.verifyOTP(
+        context: context,
+        username: username,
+        mobileNumber: mobileNumber,
+        otp: otp,
+      );
+
+      //   if (isVerified) {
+      //     // Clear OTP fields
+      //     for (var controller in _otpControllers) {
+      //       controller.clear();
+      //     }
+      //     // Navigate back with success result
+      //     Get.back(result: true);
+      //   } else {
+      //     // Stay on the screen to allow retry
+      //     for (var controller in _otpControllers) {
+      //       controller.clear();
+      //     }
+      //   }
     }
   }
 
   void resendOtp() {
     if (_isResendEnabled) {
+      final args = Get.arguments;
+      final username = args['username'] as String?;
+      final mobileNumber = args['mobileNumber'] as String?;
+
+      controller.sendOTP(
+        context: Get.context,
+        username: username,
+        mobileNumber: mobileNumber,
+      );
       setState(() {
         _isResendEnabled = false;
+        _startResendTimer();
       });
-      Get.snackbar(
-        'Resent',
-        'OTP has been resent!',
-        backgroundColor: AppColors.success,
-        colorText: Colors.white,
-      );
-      _startResendTimer(); // Restart the timer
     }
   }
 
@@ -172,14 +178,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            // Background image at the bottom
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: Image.asset(AppImages.shipGrey, fit: BoxFit.fitHeight),
             ),
-            // Scrollable OTP form
             SizedBox(
               height: screenHeight,
               child: Padding(
