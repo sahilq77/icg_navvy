@@ -56,7 +56,7 @@ class GenderController extends GetxController {
         if (response[0].status == "Success") {
           genderList.value = response[0].data!.first.gender as List<Gender>;
           log(
-            'Gender List Loaded: ${genderList.map((s) => "${s.genderName}: ${s.genderName}").toList()}',
+            'Gender List Loaded: ${genderList.map((s) => "${s.genderName}: ${s.genderCode}").toList()}',
           );
         } else {
           errorMessage.value = response[0].status.toString();
@@ -126,18 +126,16 @@ class GenderController extends GetxController {
     return genderList.map((s) => s.genderName.toString()).toSet().toList();
   }
 
+  // FIXED: Now returns genderCode, not genderName
   String? getGenderId(String genderName) {
     return genderList
-            .firstWhereOrNull(
-              (state) => state.genderName.toString() == genderName,
-            )
-            ?.genderName ??
-        '';
+        .firstWhereOrNull((state) => state.genderName.toString() == genderName)
+        ?.genderCode; // ← Correct: Returns the code (e.g., "M", "F")
   }
 
   String? getGenderNameById(String genderId) {
     return genderList
-        .firstWhereOrNull((state) => state.genderName == genderId)
+        .firstWhereOrNull((state) => state.genderCode == genderId)
         ?.genderName
         .toString();
   }
