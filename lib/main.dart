@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Trailo',
+      title: 'Indian Coast Guard',
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(
           selectionHandleColor: AppColors.primary,

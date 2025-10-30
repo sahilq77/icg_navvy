@@ -61,8 +61,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return WillPopScope(
-      onWillPop: () => bottomController.onWillPop(),
+    return PopScope(
+      canPop: false, // Prevent default back navigation
+      onPopInvoked: (didPop) async {
+        if (!didPop) {
+          // Call the same onWillPop logic from BottomNavigationController
+          bool shouldPop = await bottomController.onWillPop();
+          if (shouldPop && context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,

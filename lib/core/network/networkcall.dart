@@ -20,7 +20,10 @@ import '../../model/inward_list/get_view_notes_response.dart';
 import '../../model/login/get_login_response.dart';
 import '../../model/inward_list/get_inward_list_response.dart';
 
+import '../../model/otp/get_send_otp_response.dart';
+import '../../model/otp/get_verify_otp_response.dart';
 import '../../model/schedule_due_date/get_schedule_due_date_response.dart';
+import '../../model/submit_ame/get_submit_ame_response.dart';
 import '../../utility/app_routes.dart';
 import '../../utility/customdesign/connctivityservice.dart';
 
@@ -84,6 +87,15 @@ class Networkcall {
           case 2:
             final forgotPassword = getLoginResponseFromJson(str);
             return forgotPassword;
+          case 10:
+            final sendOtp = getSendOtpResponseFromJson(str);
+            return sendOtp;
+          case 14:
+            final verifyOtp = getVerifyOtpResponseFromJson(str);
+            return verifyOtp;
+          case 15:
+            final submitAme = getSubmitAmeResponseFromJson(str);
+            return submitAme;
           // case 3:
           //   final getCompany = getCompanyResponseFromJson(str);
           //   return getCompany;

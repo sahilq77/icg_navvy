@@ -4,82 +4,93 @@
 
 import 'dart:convert';
 
-List<GetSendOtpResponse> getSendOtpResponseFromJson(String str) => List<GetSendOtpResponse>.from(json.decode(str).map((x) => GetSendOtpResponse.fromJson(x)));
+List<GetSendOtpResponse> getSendOtpResponseFromJson(String str) =>
+    List<GetSendOtpResponse>.from(
+        json.decode(str).map((x) => GetSendOtpResponse.fromJson(x)));
 
-String getSendOtpResponseToJson(List<GetSendOtpResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String getSendOtpResponseToJson(List<GetSendOtpResponse> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class GetSendOtpResponse {
-    String timestamp;
-    String status;
-    List<Datum> data;
-    String operationMode;
-    List<ResponseInfo> responseInfo;
+  String? timestamp; // Made nullable
+  String? status; // Made nullable
+  List<Datum>? data; // Made nullable
+  String? operationMode; // Made nullable
+  List<ResponseInfo>? responseInfo; // Made nullable
 
-    GetSendOtpResponse({
-        required this.timestamp,
-        required this.status,
-        required this.data,
-        required this.operationMode,
-        required this.responseInfo,
-    });
+  GetSendOtpResponse({
+    this.timestamp,
+    this.status,
+    this.data,
+    this.operationMode,
+    this.responseInfo,
+  });
 
-    factory GetSendOtpResponse.fromJson(Map<String, dynamic> json) => GetSendOtpResponse(
-        timestamp: json["timestamp"],
-        status: json["status"],
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
-        operationMode: json["operationMode"],
-        responseInfo: List<ResponseInfo>.from(json["responseInfo"].map((x) => ResponseInfo.fromJson(x))),
-    );
+  factory GetSendOtpResponse.fromJson(Map<String, dynamic> json) =>
+      GetSendOtpResponse(
+        timestamp: json["timestamp"] as String?,
+        status: json["status"] as String?,
+        data: json["data"] != null
+            ? List<Datum>.from(json["data"].map((x) => Datum.fromJson(x)))
+            : null,
+        operationMode: json["operationMode"] as String?,
+        responseInfo: json["responseInfo"] != null
+            ? List<ResponseInfo>.from(
+                json["responseInfo"].map((x) => ResponseInfo.fromJson(x)))
+            : null,
+      );
 
-    Map<String, dynamic> toJson() => {
-        "timestamp": timestamp,
-        "status": status,
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
-        "operationMode": operationMode,
-        "responseInfo": List<dynamic>.from(responseInfo.map((x) => x.toJson())),
-    };
+  Map<String, dynamic> toJson() => {
+        if (timestamp != null) "timestamp": timestamp,
+        if (status != null) "status": status,
+        if (data != null)
+          "data": List<dynamic>.from(data!.map((x) => x.toJson())),
+        if (operationMode != null) "operationMode": operationMode,
+        if (responseInfo != null)
+          "responseInfo": List<dynamic>.from(responseInfo!.map((x) => x.toJson())),
+      };
 }
 
 class Datum {
-    int serialNumber;
-    String otp;
+  int? serialNumber; // Made nullable
+  String? otp; // Made nullable
 
-    Datum({
-        required this.serialNumber,
-        required this.otp,
-    });
+  Datum({
+    this.serialNumber,
+    this.otp,
+  });
 
-    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        serialNumber: json["serialNumber"],
-        otp: json["otp"],
-    );
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+        serialNumber: json["serialNumber"] as int?,
+        otp: json["otp"] as String?,
+      );
 
-    Map<String, dynamic> toJson() => {
-        "serialNumber": serialNumber,
-        "otp": otp,
-    };
+  Map<String, dynamic> toJson() => {
+        if (serialNumber != null) "serialNumber": serialNumber,
+        if (otp != null) "otp": otp,
+      };
 }
 
 class ResponseInfo {
-    int msgCode;
-    String msgType;
-    String userMessage;
+  int? msgCode; // Made nullable
+  String? msgType; // Made nullable
+  String? userMessage; // Made nullable
 
-    ResponseInfo({
-        required this.msgCode,
-        required this.msgType,
-        required this.userMessage,
-    });
+  ResponseInfo({
+    this.msgCode,
+    this.msgType,
+    this.userMessage,
+  });
 
-    factory ResponseInfo.fromJson(Map<String, dynamic> json) => ResponseInfo(
-        msgCode: json["msgCode"],
-        msgType: json["msgType"],
-        userMessage: json["userMessage"],
-    );
+  factory ResponseInfo.fromJson(Map<String, dynamic> json) => ResponseInfo(
+        msgCode: json["msgCode"] as int?,
+        msgType: json["msgType"] as String?,
+        userMessage: json["userMessage"] as String?,
+      );
 
-    Map<String, dynamic> toJson() => {
-        "msgCode": msgCode,
-        "msgType": msgType,
-        "userMessage": userMessage,
-    };
+  Map<String, dynamic> toJson() => {
+        if (msgCode != null) "msgCode": msgCode,
+        if (msgType != null) "msgType": msgType,
+        if (userMessage != null) "userMessage": userMessage,
+      };
 }

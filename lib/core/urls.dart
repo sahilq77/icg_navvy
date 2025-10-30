@@ -23,15 +23,14 @@ class Networkutility {
   static int getFinancialYearApi = 9;
   static String genrateOtp = "${baseUrl + "appointment/otp/genrate/v1"}";
   static int genrateOtpApi = 10;
-    static String getUserDetails = "${baseUrl + "investigation/v1/personal"}";
+  static String getUserDetails = "${baseUrl + "investigation/v1/personal"}";
   static int getUserDetailsApi = 11;
-    static String getScheduleDueDate = "${baseUrl + "rankSchedule/dueDate"}";
+  static String getScheduleDueDate = "${baseUrl + "rankSchedule/dueDate"}";
   static int getScheduleDueDateApi = 12;
-  static String verifyOtp = "${baseUrl + "appointment/otp/genrate/v1"}";
-  static int verifyOtpApi = 13;
+  static String verifyOtp = "${baseUrl + "appointment/otp//verify/v1"}";
+  static int verifyOtpApi = 14;
 
-  
-
-
+  static String submitAme = "${baseUrl + "appointment/v1"}";
+  static int submitAmeApi = 15;
   
 }

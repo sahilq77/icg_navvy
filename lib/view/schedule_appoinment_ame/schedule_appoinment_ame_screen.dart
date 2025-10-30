@@ -53,22 +53,33 @@ class _ScheduleAppointmentAmeScreenState
   void initState() {
     super.initState();
     // Fetch user profile and other data
-    userController.fetchUserProfile(context: context);
-    rankController.fetchRank(context: context);
-    bloodGroupController.fetchBloodGroups(context: context);
-    commandController.fetchCommand(context: context);
-    branchController.fetchBranches(context: context);
-    serviceController.fetchService(context: context);
-    medicalCategoryController.fetchMedicalCategory(context: context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      userController.fetchUserProfile(context: context);
+      rankController.fetchRank(context: context);
+      bloodGroupController.fetchBloodGroups(context: context);
+      commandController.fetchCommand(context: context);
+      branchController.fetchBranches(context: context);
+      serviceController.fetchService(context: context);
+      medicalCategoryController.fetchMedicalCategory(context: context);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => bottomController.onWillPop(),
+    return PopScope(
+      canPop: false, // Prevent default back navigation
+      onPopInvoked: (didPop) async {
+        if (!didPop) {
+          // Call the same onWillPop logic from BottomNavigationController
+          bool shouldPop = await bottomController.onWillPop();
+          if (shouldPop && context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           backgroundColor: AppColors.background,
           elevation: 0,
           centerTitle: false,
@@ -81,9 +92,9 @@ class _ScheduleAppointmentAmeScreenState
               fontSize: 18,
             ),
           ),
-          bottom: PreferredSize(
+          bottom: const PreferredSize(
             preferredSize: Size.fromHeight(0),
-            child: Divider(color: const Color(0xFFDADADA), height: 0),
+            child: Divider(color: Color(0xFFDADADA), height: 0),
           ),
         ),
         body: Obx(() {
@@ -110,7 +121,7 @@ class _ScheduleAppointmentAmeScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _sectionTitle(AppImages.personIcon, "Personal Details"),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Expanded(
@@ -118,7 +129,7 @@ class _ScheduleAppointmentAmeScreenState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _textFieldTitle("Personal Number"),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   TextFormField(
                                     initialValue:
                                         userController
@@ -127,19 +138,21 @@ class _ScheduleAppointmentAmeScreenState
                                             .personnel
                                             ?.personalNumber ??
                                         '',
-                                    decoration: InputDecoration(filled: true),
+                                    decoration: const InputDecoration(
+                                      filled: true,
+                                    ),
                                     enabled: false,
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _textFieldTitle("Rank"),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   _buildShimmerDropdown(
                                     isLoading: rankController.isLoading.value,
                                     child: DropdownSearch<String>(
@@ -200,9 +213,9 @@ class _ScheduleAppointmentAmeScreenState
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Name"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         TextFormField(
                           initialValue:
                               userController
@@ -211,12 +224,12 @@ class _ScheduleAppointmentAmeScreenState
                                   .personnel
                                   ?.fullName ??
                               '',
-                          decoration: InputDecoration(filled: true),
+                          decoration: const InputDecoration(filled: true),
                           enabled: false,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Blood Group"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: bloodGroupController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -273,7 +286,7 @@ class _ScheduleAppointmentAmeScreenState
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -281,9 +294,9 @@ class _ScheduleAppointmentAmeScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _sectionTitle(AppImages.serviceIcon, "Service Details"),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Command"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: commandController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -340,9 +353,9 @@ class _ScheduleAppointmentAmeScreenState
                                 commandController.selectedCommandVal?.value,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Unit"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: unitController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -391,9 +404,9 @@ class _ScheduleAppointmentAmeScreenState
                                 unitController.selectedUnitVal?.value,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Arm/Corps/Branch/Trade"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: branchController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -445,9 +458,9 @@ class _ScheduleAppointmentAmeScreenState
                                 'Select Service',
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Gender"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: genderController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -498,9 +511,9 @@ class _ScheduleAppointmentAmeScreenState
                                 genderController.selectedGenderVal?.value,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Service"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: serviceController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -552,9 +565,9 @@ class _ScheduleAppointmentAmeScreenState
                                 'Select Service',
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Date of Birth"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         TextFormField(
                           initialValue: formatDate(
                             userController
@@ -565,10 +578,10 @@ class _ScheduleAppointmentAmeScreenState
                                     ?.toString() ??
                                 '',
                           ),
-                          decoration: InputDecoration(filled: true),
+                          decoration: const InputDecoration(filled: true),
                           enabled: false,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Expanded(
@@ -576,7 +589,7 @@ class _ScheduleAppointmentAmeScreenState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _textFieldTitle("Total Service"),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   TextFormField(
                                     initialValue:
                                         userController
@@ -585,19 +598,21 @@ class _ScheduleAppointmentAmeScreenState
                                             .personnel
                                             ?.totalService ??
                                         '',
-                                    decoration: InputDecoration(filled: true),
+                                    decoration: const InputDecoration(
+                                      filled: true,
+                                    ),
                                     enabled: false,
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _textFieldTitle("Date of Commission"),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   TextFormField(
                                     initialValue: formatDate(
                                       userController
@@ -605,10 +620,12 @@ class _ScheduleAppointmentAmeScreenState
                                               .first
                                               .personnel
                                               ?.dateOfCommissioning
-                                              .toString() ??
+                                              ?.toString() ??
                                           '',
                                     ),
-                                    decoration: InputDecoration(filled: true),
+                                    decoration: const InputDecoration(
+                                      filled: true,
+                                    ),
                                     enabled: false,
                                   ),
                                 ],
@@ -616,9 +633,9 @@ class _ScheduleAppointmentAmeScreenState
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Last AME/PME carried out at"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: allUnitController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -670,9 +687,9 @@ class _ScheduleAppointmentAmeScreenState
                                 allUnitController.selectedUnitVal?.value,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Last Examination date"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         TextFormField(
                           initialValue: formatDate(
                             userController
@@ -680,17 +697,17 @@ class _ScheduleAppointmentAmeScreenState
                                     .first
                                     .personnel
                                     ?.lastInvestigationDate
-                                    .toString() ??
+                                    ?.toString() ??
                                 '',
                           ),
-                          decoration: InputDecoration(filled: true),
+                          decoration: const InputDecoration(filled: true),
                           enabled: false,
                         ),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -701,7 +718,7 @@ class _ScheduleAppointmentAmeScreenState
                           AppImages.heartbeatIcon,
                           "Medical Details",
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Expanded(
@@ -709,7 +726,7 @@ class _ScheduleAppointmentAmeScreenState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _textFieldTitle("Age"),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   TextFormField(
                                     initialValue:
                                         userController
@@ -718,19 +735,21 @@ class _ScheduleAppointmentAmeScreenState
                                             .personnel
                                             ?.age ??
                                         '',
-                                    decoration: InputDecoration(filled: true),
+                                    decoration: const InputDecoration(
+                                      filled: true,
+                                    ),
                                     enabled: false,
                                   ),
                                 ],
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _textFieldTitle("W.E.F. Date"),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   TextFormField(
                                     initialValue: formatDate(
                                       userController
@@ -738,10 +757,12 @@ class _ScheduleAppointmentAmeScreenState
                                               .first
                                               .personnel
                                               ?.medicalCategoryWithEffectFrom
-                                              .toString() ??
+                                              ?.toString() ??
                                           '',
                                     ),
-                                    decoration: InputDecoration(filled: true),
+                                    decoration: const InputDecoration(
+                                      filled: true,
+                                    ),
                                     enabled: false,
                                   ),
                                 ],
@@ -749,9 +770,9 @@ class _ScheduleAppointmentAmeScreenState
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Past Medical History"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         TextFormField(
                           initialValue:
                               userController
@@ -760,12 +781,12 @@ class _ScheduleAppointmentAmeScreenState
                                   .personnel
                                   ?.pastMedicalHistory ??
                               '',
-                          decoration: InputDecoration(filled: true),
+                          decoration: const InputDecoration(filled: true),
                           enabled: false,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Present Medical Category"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: medicalCategoryController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -825,7 +846,7 @@ class _ScheduleAppointmentAmeScreenState
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -836,9 +857,9 @@ class _ScheduleAppointmentAmeScreenState
                           AppImages.calenderCheckBlueIcon,
                           "Appointment Details",
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Year Of AME/PME*"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         _buildShimmerDropdown(
                           isLoading: financialYearController.isLoading.value,
                           child: DropdownSearch<String>(
@@ -923,9 +944,9 @@ class _ScheduleAppointmentAmeScreenState
                                 ?.value,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Preferred Date"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Obx(() {
                           return TextFormField(
                             controller: TextEditingController(
@@ -936,8 +957,8 @@ class _ScheduleAppointmentAmeScreenState
                                   : '',
                             ),
                             decoration: InputDecoration(
-                              suffixIcon: Icon(Icons.calendar_today),
-                              border: OutlineInputBorder(),
+                              suffixIcon: const Icon(Icons.calendar_today),
+                              border: const OutlineInputBorder(),
                               filled: true,
                               fillColor: Colors.grey[200],
                             ),
@@ -955,9 +976,9 @@ class _ScheduleAppointmentAmeScreenState
                             },
                           );
                         }),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Scheduled Due Date"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Obx(() {
                           // Check if due date is loading
                           if (scheduleDueDateController.isLoading.value) {
@@ -973,7 +994,7 @@ class _ScheduleAppointmentAmeScreenState
                                 text: 'Error loading due date',
                               ),
                               decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                                 filled: true,
                                 fillColor: Colors.grey[200],
                                 errorText: scheduleDueDateController
@@ -1007,30 +1028,17 @@ class _ScheduleAppointmentAmeScreenState
                                   : '',
                             ),
                             decoration: InputDecoration(
-                              suffixIcon: Icon(Icons.calendar_today),
-                              border: OutlineInputBorder(),
+                              suffixIcon: const Icon(Icons.calendar_today),
+                              border: const OutlineInputBorder(),
                               filled: true,
                               fillColor: Colors.grey[200],
                             ),
                             readOnly: true,
-                            onTap: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate:
-                                    controller.scheduledDueDate.value ??
-                                    DateTime.now(),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime(2100),
-                              );
-                              if (pickedDate != null) {
-                                controller.updateScheduledDueDate(pickedDate);
-                              }
-                            },
                           );
                         }),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         _textFieldTitle("Mobile Number"),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         TextFormField(
                           initialValue:
                               userController
@@ -1040,7 +1048,7 @@ class _ScheduleAppointmentAmeScreenState
                                   ?.personalMobileNumber ??
                               '',
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             filled: true,
                             fillColor: Colors.grey[200],
                           ),
@@ -1050,8 +1058,7 @@ class _ScheduleAppointmentAmeScreenState
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
-                // Inside the build method of _ScheduleAppointmentAmeScreenState, replace the Document Upload Card
+                const SizedBox(height: 15),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -1062,18 +1069,18 @@ class _ScheduleAppointmentAmeScreenState
                           AppImages.uploadArrowIcon,
                           "Document Upload${controller.isDocumentUploadMandatory ? ' *' : ''}",
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Obx(() {
                           return DottedBorder(
                             borderType: BorderType.RRect,
-                            radius: Radius.circular(8),
+                            radius: const Radius.circular(8),
                             color:
                                 controller.isDocumentUploadMandatory &&
                                     controller.selectedFile.value == null
                                 ? Colors.red
                                 : Colors.grey,
                             strokeWidth: 1.0,
-                            dashPattern: [4, 4],
+                            dashPattern: const [4, 4],
                             child: InkWell(
                               onTap: () async {
                                 FilePickerResult? result = await FilePicker
@@ -1091,12 +1098,12 @@ class _ScheduleAppointmentAmeScreenState
                                     );
                                 if (result != null && result.files.isNotEmpty) {
                                   controller.updateSelectedFile(
-                                    result.files.single,
+                                    result.files.first,
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        'File selected: ${result.files.single.name}',
+                                        'Selected file: ${result.files.first.name}',
                                       ),
                                     ),
                                   );
@@ -1109,13 +1116,10 @@ class _ScheduleAppointmentAmeScreenState
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       SvgPicture.asset(AppImages.uploadSkyIcon),
-                                      SizedBox(height: 10),
+                                      const SizedBox(height: 10),
                                       Text(
                                         controller.selectedFile.value != null
-                                            ? controller
-                                                  .selectedFile
-                                                  .value!
-                                                  .name
+                                            ? 'File selected: ${controller.selectedFile.value!.name}'
                                             : controller
                                                   .isDocumentUploadMandatory
                                             ? "Upload Mandatory Condonation Document"
@@ -1132,9 +1136,9 @@ class _ScheduleAppointmentAmeScreenState
                                       ),
                                       if (controller.selectedFile.value ==
                                           null) ...[
-                                        SizedBox(height: 5),
+                                        const SizedBox(height: 5),
                                         Text(
-                                          "Drag & drop files here or click to browse",
+                                          "Drag & drop a file here or click to browse",
                                           style: GoogleFonts.inter(
                                             fontSize: 10,
                                             fontWeight: FontWeight.w400,
@@ -1151,7 +1155,7 @@ class _ScheduleAppointmentAmeScreenState
                         }),
                         if (controller.isDocumentUploadMandatory &&
                             controller.selectedFile.value == null) ...[
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Text(
                             "Document upload is mandatory when the preferred date is after the scheduled due date.",
                             style: GoogleFonts.inter(
@@ -1160,12 +1164,47 @@ class _ScheduleAppointmentAmeScreenState
                             ),
                           ),
                         ],
+                        // Display selected file
+                        if (controller.selectedFile.value != null) ...[
+                          const SizedBox(height: 10),
+                          Text(
+                            "Selected File:",
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.defaultblack,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    controller.selectedFile.value!.name,
+                                    style: GoogleFonts.inter(fontSize: 12),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    controller.clearSelectedFile();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
                 ),
-
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -1173,11 +1212,11 @@ class _ScheduleAppointmentAmeScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _sectionTitle(AppImages.declarationIcon, "Declaration"),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Container(
-                          padding: EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Color(0xFFE8EAEF).withOpacity(0.4),
+                            color: const Color(0xFFE8EAEF).withOpacity(0.4),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Text(
@@ -1185,11 +1224,11 @@ class _ScheduleAppointmentAmeScreenState
                             style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(55, 60, 59, 1),
+                              color: const Color.fromRGBO(55, 60, 59, 1),
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Obx(
                           () => Row(
                             children: [
@@ -1221,7 +1260,7 @@ class _ScheduleAppointmentAmeScreenState
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -1232,7 +1271,7 @@ class _ScheduleAppointmentAmeScreenState
                           AppImages.declarationIcon,
                           "Special Category",
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CheckboxListTile(
                           title: Text(
                             "Diver",
@@ -1250,7 +1289,7 @@ class _ScheduleAppointmentAmeScreenState
                               ),
                           controlAffinity: ListTileControlAffinity.leading,
                           dense: true,
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 0,
                           ),
@@ -1272,7 +1311,7 @@ class _ScheduleAppointmentAmeScreenState
                               ),
                           controlAffinity: ListTileControlAffinity.leading,
                           dense: true,
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 0,
                           ),
@@ -1294,7 +1333,7 @@ class _ScheduleAppointmentAmeScreenState
                               ),
                           controlAffinity: ListTileControlAffinity.leading,
                           dense: true,
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 0,
                           ),
@@ -1316,7 +1355,7 @@ class _ScheduleAppointmentAmeScreenState
                               ),
                           controlAffinity: ListTileControlAffinity.leading,
                           dense: true,
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 0,
                           ),
@@ -1335,7 +1374,7 @@ class _ScheduleAppointmentAmeScreenState
                               .updateSpecialCategory(noneOfAbove: value),
                           controlAffinity: ListTileControlAffinity.leading,
                           dense: true,
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 0,
                           ),
@@ -1344,12 +1383,12 @@ class _ScheduleAppointmentAmeScreenState
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
                     onPressed: controller.reviewApplication,
                     style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
+                      minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -1363,12 +1402,12 @@ class _ScheduleAppointmentAmeScreenState
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           );
         }),
-        bottomNavigationBar: CustomBottomBar(),
+        bottomNavigationBar: const CustomBottomBar(),
       ),
     );
   }
@@ -1393,23 +1432,23 @@ class _ScheduleAppointmentAmeScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _sectionTitle(AppImages.personIcon, "Personal Details"),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(child: _buildShimmerField()),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Expanded(child: _buildShimmerField()),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -1417,31 +1456,31 @@ class _ScheduleAppointmentAmeScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _sectionTitle(AppImages.serviceIcon, "Service Details"),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(child: _buildShimmerField()),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Expanded(child: _buildShimmerField()),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -1449,17 +1488,17 @@ class _ScheduleAppointmentAmeScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _sectionTitle(AppImages.heartbeatIcon, "Medical Details"),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(child: _buildShimmerField()),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Expanded(child: _buildShimmerField()),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildShimmerField(),
                 ],
               ),
@@ -1508,7 +1547,7 @@ class _ScheduleAppointmentAmeScreenState
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SvgPicture.asset(icon),
-        SizedBox(width: 5),
+        const SizedBox(width: 5),
         Text(
           title,
           style: GoogleFonts.inter(

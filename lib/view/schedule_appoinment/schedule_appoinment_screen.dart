@@ -235,8 +235,17 @@ class _ScheduleAppointmentScreenState extends State<ScheduleAppointmentScreen> {
   final bottomController = Get.put(BottomNavigationController());
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => bottomController.onWillPop(),
+     return PopScope(
+      canPop: false, // Prevent default back navigation
+      onPopInvoked: (didPop) async {
+        if (!didPop) {
+          // Call the same onWillPop logic from BottomNavigationController
+          bool shouldPop = await bottomController.onWillPop();
+          if (shouldPop && context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.black),
