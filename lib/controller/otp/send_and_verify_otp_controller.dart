@@ -19,7 +19,11 @@ class SendAndVerifyOtpController extends GetxController {
     required String? mobileNumber,
   }) async {
     try {
+
+      
       final jsonBody = {
+
+
         "data": [
           {"userId": username, "mobileNo": mobileNumber},
         ],

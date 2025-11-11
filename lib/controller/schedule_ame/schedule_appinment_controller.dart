@@ -439,14 +439,14 @@ class ScheduleAppointmentController extends GetxController {
                     ).parse(appointment.value.scheduledDueDate!),
                   )
                 : '',
-            "applyBeforeDate": "2024-03-31",
+            "applyBeforeDate": "2025-04-30",
             "appointmentYear":
                 int.tryParse(appointment.value.appointmentYear ?? '') ??
                 DateTime.now().year,
             "personalPreferredDate":
                 appointment.value.preferredDate != null &&
                     appointment.value.preferredDate!.isNotEmpty
-                ? DateFormat('yyyy-MM-dd').format(
+                ? DateFormat('dd-MM-yyyy').format(
                     DateFormat(
                       'dd/MM/yyyy',
                     ).parse(appointment.value.preferredDate!),
@@ -456,7 +456,8 @@ class ScheduleAppointmentController extends GetxController {
             "declaration":
                 "I declare that I am not under any medication without the knowledge of Authorised Medical Attendant.",
             "diverYn": appointment.value.diver ? 1 : 0,
-            "airCrewDiverYn": appointment.value.aviator ? 1 : 0,
+            "submarinerYn": appointment.value.aviator ? 1 : 0,
+            "marcoYn": appointment.value.marco ? 1 : 0,
             "aviatorYn": appointment.value.aviator ? 1 : 0,
             "reemployeedYn": 0,
             "sdOfficerYn": 0,
@@ -630,7 +631,13 @@ class ScheduleAppointmentController extends GetxController {
       if (list != null && list.isNotEmpty) {
         List<GetSubmitAmeResponse> response = List.from(list);
 
-        if (response[0].status == "true") {
+        if (response[0].status == "Success") {
+          final userData = response[0].data!;
+          await uploadDocuments(
+            uploadedBy: userData.first.personalNumber.toString(),
+            personalNumber: userData.first.personalNumber.toString(),
+            appointmentSerialNumber: userData.first.serialNumber.toString(),
+          );
           Get.snackbar(
             'Success',
             'Submitted Successfully',
@@ -640,7 +647,7 @@ class ScheduleAppointmentController extends GetxController {
           );
 
           Get.offNamed(AppRoutes.confirmtionScreen);
-        } else {
+        } else if (response[0].status == "Failed") {
           Get.snackbar(
             'Error',
             "Failed to submit application",
